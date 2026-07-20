@@ -26,15 +26,15 @@ const TOKEN = 'GAMMA';
 const HOOD_MINT = process.env.GAMMA_MINT || ''; // $GAMMA · Robinhood Chain (CA bar, dormant until set)
 const SEED_USDC = +(process.env.SEED_USDC || 10000);
 
-// On-chain (Phase 1.5): set these once the Anchor program is deployed to enable
+// On-chain (Phase 1.5): set these once the on-chain program is deployed to enable
 // on-chain mode that routes trades through the program via wallet. Until then
-// CHAIN is null and the site stays in off-chain demo mode.
+// CHAIN is null and the site stays in off-chain beta mode.
 const CHAIN = process.env.GAMMA_PROGRAM_ID ? {
   programId: process.env.GAMMA_PROGRAM_ID,
   usdcMint: process.env.USDC_MINT || '',
   cluster: process.env.CHAIN_CLUSTER || 'robinhood',
-  rpc: process.env.SOLANA_RPC || '',
-  hoodMint: HOOD_MINT,
+  rpc: process.env.CHAIN_RPC || '',
+  gammaMint: HOOD_MINT,
 } : null;
 
 // ---- engine config (analogues of the spec's cfg_* knobs) ----
