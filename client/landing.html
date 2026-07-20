@@ -179,13 +179,14 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
     <a href="#engine">Engine</a><a href="#origin">Origin</a><a href="/docs">Docs</a><a href="#faq">FAQ</a>
   </nav>
   <div class="right">
+    <a class="btn sm" href="https://x.com/GammaPerps" target="_blank" rel="noopener" aria-label="GAMMA on X" style="padding:11px 13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
     <a class="btn acc sm" href="/app">Enter App →</a>
   </div>
 </div></header>
 
 <!-- HERO -->
 <section class="hero"><div class="wrap">
-  <div class="status-pill"><span class="d"></span>LIVE ON REAL PYTH PRICES · (PAPER MODE) · CUSTODY AFTER AUDIT</div>
+  <div class="status-pill"><span class="d"></span>LIVE ON REAL PYTH PRICES · OPEN BETA · CUSTODY AFTER AUDIT</div>
   <h1>Stocks. Memecoins.<br><span class="g">Leverage.</span> 8-bit.</h1>
   <p class="lede"><b style="color:var(--ink)">Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX.</b> GAMMA brings the percolator risk engine to Robinhood Chain — a perpetual-futures DEX that is solvent by construction. Long TSLA at 10× · short SPY · ape CASHCAT. Wins are only ever paid out of money that actually exists. No ADL queues. No insurance black box. No admin.</p>
   <div class="cta">
@@ -213,7 +214,7 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
       <div class="row"><div class="tag">RESIDUAL · H</div><div><h3>Backed exits — the haircut</h3><p>Your deposit stands first in line; profit waits its turn. The exchange only pays profit out of its real residual buffer. If open profit ever exceeds it, every winner is paid the same fraction <b>H</b> — instantly and equally. You can never withdraw more value than actually exists.</p><div class="f">Residual = V − (C + I) &nbsp;·&nbsp; H = min(Residual, ΣPnL⁺) ÷ ΣPnL⁺</div></div></div>
       <div class="row"><div class="tag v">A / K / F</div><div><h3>Queue-free deleveraging</h3><p>Most exchanges run an ADL queue that force-closes one unlucky winner to cover a blow-up. GAMMA doesn't. Three lazy per-side indices socialize a liquidation across the whole side, pro-rata, in O(1). No victim is chosen — the loss is shared in microscopic, fair slices.</p></div></div>
       <div class="row"><div class="tag v">CRANK</div><div><h3>Bounded cranks</h3><p>Repricing is capped per slot: a single oracle wick or funding spike physically cannot move open interest through more loss than the exchange budgeted for. The cause of most "got liquidated on a wick" stories is closed off at the protocol level.</p></div></div>
-      <div class="row"><div class="tag g">PYTH</div><div><h3>Real oracle prices, live now</h3><p>Every market marks to a live oracle today — Pyth equity feeds for the 10 US stocks (SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL, HOOD), pinned DEX pairs for Robinhood-native coins — in paper mode. The marks, funding, liquidations and the haircut you see are the genuine engine running on genuine prices. Only custody is simulated.</p></div></div>
+      <div class="row"><div class="tag g">PYTH</div><div><h3>Real oracle prices, live now</h3><p>Every market marks to a live oracle today — Pyth equity feeds for the 10 US stocks (SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL, HOOD), pinned DEX pairs for Robinhood-native coins — in the open beta. The marks, funding, liquidations and the haircut you see are the genuine engine running on genuine prices. Only custody is simulated.</p></div></div>
       <div class="row"><div class="tag g">KEEPERS</div><div><h3>Permissionless keepers</h3><p>Anyone can run a keeper to mark prices and liquidate underwater positions, paid by liquidation fees. There is no privileged operator who can halt the book or front-run you. The exchange runs itself.</p></div></div>
       <div class="row"><div class="tag">KANI · 471</div><div><h3>Formally verified math</h3><p>The percolator risk engine GAMMA follows ships <b>471 model-checking proofs</b> covering the H + A/K/F math — haircut conservation, ADL fairness, funding zero-sum. The solvency guarantee isn't marketing; it's proven.</p></div></div>
     </div>
@@ -235,7 +236,7 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
         <div class="ostat"><div class="num" id="os-mkt">10</div><div class="lbl">live perp markets</div></div>
         <div class="ostat"><div class="num">471</div><div class="lbl">proofs behind the math</div></div>
       </div>
-      <div class="body">What GAMMA adds on top of the reference engine: a live <b>paper exchange on real Pyth prices</b> (trade it now), a pixel-perfect trading terminal, a live solvency dashboard, and a real <b>on-chain program</b> — USDC custody in a program vault, on-chain oracle, and the full engine enforced in-program — built and ready for on-chain deployment. <b>Mainnet custody opens only after an external audit.</b> We'd rather ship late than ship a protocol that loses your funds.</div>
+      <div class="body">What GAMMA adds on top of the reference engine: a live <b>beta exchange on real Pyth prices</b> (trade it now), a pixel-perfect trading terminal, a live solvency dashboard, and a real <b>on-chain program</b> — USDC custody in a program vault, on-chain oracle, and the full engine enforced in-program — built and ready for on-chain deployment. <b>Mainnet custody opens only after an external audit.</b> We'd rather ship late than ship a protocol that loses your funds.</div>
     </div>
   </div>
 </div></section>
@@ -244,7 +245,7 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
 <section class="section"><div class="wrap">
   <div class="band">
     <h2>PRESS START. THE EXCHANGE IS OPEN.</h2>
-    <p>Trade every mechanic — mark-to-market, funding, liquidations, the haircut — live on real oracle prices, with paper USDC. No signup, no signing, no risk. See the solvency engine work in real time.</p>
+    <p>Trade every mechanic — mark-to-market, funding, liquidations, the haircut — live on real oracle prices, with beta USDC. No signup, no signing, no risk. See the solvency engine work in real time.</p>
     <div class="cta">
       <a class="btn acc" href="/app">Enter App →</a>
       <a class="btn" href="/docs">Read the docs</a>
@@ -271,7 +272,7 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
   <div class="split">
     <div class="lead"><h2>What you're probably wondering.</h2><p>Straight answers.</p></div>
     <div class="faq">
-      <details open><summary>Is this live with real money?</summary><div class="a">No — and that's deliberate. Pre-audit, public trading puts user funds at risk, and we won't do that. Today GAMMA runs in <b>paper mode on real Pyth oracle prices</b>: the engine, marks, funding, liquidations and the haircut are all genuinely live — only positions and USDC are simulated, so nothing is at risk. Real custody opens the moment the audit clears, not a day before.</div></details>
+      <details open><summary>Is this live with real money?</summary><div class="a">No — and that's deliberate. Pre-audit, public trading puts user funds at risk, and we won't do that. Today GAMMA runs as an <b>open beta on real Pyth oracle prices</b>: the engine, marks, funding, liquidations and the haircut are all genuinely live — only positions and USDC are simulated, so nothing is at risk. Real custody opens the moment the audit clears, not a day before.</div></details>
       <details><summary>When does mainnet open?</summary><div class="a">After the external audit clears — we're targeting <b>Q4 2026</b>, gated on that sign-off. The on-chain program is already built: real USDC custody in a program vault, on-chain oracle, and the full percolator engine enforced in-program — with on-chain deployment next. Public trading opens the instant the audit passes. We won't ship a protocol that loses your funds to hit a date.</div></details>
       <details><summary>What is "percolator," and what's the haircut?</summary><div class="a">Percolator is a risk-engine design for permissionless perps that makes the exchange <b>structurally solvent</b>. Its core trick is the haircut <b>H</b>: profit is only ever paid from the exchange's real residual buffer, so total payouts can never exceed what exists. Your deposited capital stays whole and is paid out first.</div></details>
       <details><summary>How is liquidation fair without an ADL queue?</summary><div class="a">When a position blows past its margin, the loss is absorbed by the <b>A/K/F side indices</b> — spread proportionally across everyone on that side in tiny slices, in O(1). No single "victim" gets their winning trade force-closed the way ADL queues do on other venues.</div></details>
@@ -286,10 +287,10 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
 </div></section>
 
 <div class="wrap">
-  <div class="disc"><b>Paper-traded.</b> GAMMA runs on real Pyth oracle prices and a faithful port of the percolator solvency engine — the markets, marks, funding, liquidations and haircut are all live. Trading itself is <b>simulated</b>, with no custody and no real funds at risk. $GAMMA is a real token; on-chain custody &amp; settlement are a later, audited phase. Perpetual futures with leverage are extremely high-risk and can be liquidated to zero. Not financial advice.</div>
+  <div class="disc"><b>Open beta.</b> GAMMA runs on real Pyth oracle prices and a faithful port of the percolator solvency engine — the markets, marks, funding, liquidations and haircut are all live. Trading itself is <b>simulated</b>, with no custody and no real funds at risk. $GAMMA is a real token; on-chain custody &amp; settlement are a later, audited phase. Perpetual futures with leverage are extremely high-risk and can be liquidated to zero. Not financial advice.</div>
 </div>
 
-<footer>GAMMA · 8-bit perps on Robinhood Chain · <a href="/app">app</a> · <a href="/docs">docs</a> · <span class="mono">$GAMMA</span></footer>
+<footer>GAMMA · 8-bit perps on Robinhood Chain · <a href="/app">app</a> · <a href="/docs">docs</a> · <a href="https://x.com/GammaPerps" target="_blank" rel="noopener">@GammaPerps</a> · <span class="mono">$GAMMA</span></footer>
 
 <script>
 const cnt=(n)=>{if(n==null||!isFinite(n))return'—';const a=Math.abs(n);if(a>=1e9)return'$'+(n/1e9).toFixed(2)+'B';if(a>=1e6)return'$'+(n/1e6).toFixed(2)+'M';if(a>=1e3)return'$'+(n/1e3).toFixed(1)+'K';return'$'+n.toFixed(0)};
