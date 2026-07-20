@@ -291,7 +291,7 @@ docs below is visible there, live, while you trade.</pre>
     <ul>
       <li><b>Source</b> — <a href="https://pyth.network" style="color:var(--dk)" target="_blank" rel="noopener">Pyth</a> price feeds via Hermes (including the US-equity feeds), fetched every ~2.5 seconds per market; pinned deep-liquidity DEX pairs for Robinhood-native coins.</li>
       <li><b>Marking</b> — each new price enters through the bounded crank (<a href="#cranks" style="color:var(--dk)">Invariant 3</a>), which also acts as a bad-tick guard.</li>
-      <li><b>Restart safety</b> — after a redeploy, the first tick re-anchors price <i>without</i> marking, so downtime gaps can't print phantom PnL.</li>
+      <li><b>Restart safety</b> — after a redeploy, the first tick re-anchors price <i>without</i> marking, so downtime gaps can't print PnL out of thin air.</li>
       <li><b>Funding rate</b> — model-based on the paper market (labeled as such in the UI); on-chain funding ships with the program.</li>
     </ul>
 
