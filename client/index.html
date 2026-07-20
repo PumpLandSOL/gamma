@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GAMMA — 8-bit perps for tokenized stocks on Robinhood Chain</title>
+<meta name="description" content="Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. Real Pyth prices, percolator solvency engine. $GAMMA">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GAMMA">
+<meta property="og:title" content="GAMMA — 8-bit perps on Robinhood Chain">
+<meta property="og:description" content="The perp DEX that can't go insolvent. Real Pyth prices, percolator solvency engine, on Robinhood Chain. $GAMMA">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GAMMA — perps that can't go insolvent">
+<meta name="twitter:image" content="/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* GAMMA theme — 8-bit paper white + Robinhood green */
+  --bg:#f6fdf7; --panel:#ffffff; --ink:#0b2413; --sub:#47664f; --mut:#7d947f;
+  --grn:#00c805; --dk:#008f04; --lime:#a3e635; --red:#ff4d68; --gold:#b8860b;
+  --up:#00c805; --down:#ff4d68;
+  --px:'Press Start 2P',monospace; --vt:'VT323',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,200,5,.05) 0 1px,transparent 1px 24px),
+    repeating-linear-gradient(90deg,rgba(0,200,5,.05) 0 1px,transparent 1px 24px)}
+.mono{font-family:var(--vt);font-size:17px;font-variant-numeric:tabular-nums}
+.up{color:var(--up)}.down{color:var(--down)}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:1340px;margin:0 auto;padding:0 18px}
+
+/* 8-bit button */
+.btn{border:2px solid var(--ink);background:var(--panel);color:var(--ink);padding:10px 16px;
+  font-family:var(--px);font-size:9px;line-height:1.4;letter-spacing:.5px;box-shadow:3px 3px 0 var(--ink);transition:.08s}
+.btn:hover{background:#eefcef}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.acc{background:var(--grn);color:#fff}
+.btn.acc:hover{background:var(--dk)}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:40;background:var(--panel);border-bottom:2px solid var(--ink)}
+.top .wrap{display:flex;align-items:center;gap:22px;height:62px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .drop{width:26px;height:26px}
+.brand b{font-family:var(--px);font-size:15px;font-weight:400;letter-spacing:1px;color:var(--ink)}
+.brand .chip{font-family:var(--px);font-size:7px;letter-spacing:1px;color:#fff;padding:4px 7px;background:var(--grn);border:2px solid var(--ink)}
+.nav{display:flex;gap:4px;margin-left:8px}
+.nav a{font-family:var(--px);font-size:8px;color:var(--sub);padding:10px 10px}
+.nav a:hover{color:var(--ink);background:#eefcef}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.nettoggle{display:inline-flex;background:var(--bg);border:2px solid var(--ink);padding:2px;gap:2px}
+.netbtn{font-family:var(--px);font-size:8px;color:var(--sub);background:none;border:none;padding:7px 12px}
+.netbtn.on{color:#fff;background:var(--grn)}
+.bal{display:flex;align-items:center;gap:8px;background:var(--panel);border:2px solid var(--ink);padding:7px 14px;font-size:13px;box-shadow:3px 3px 0 var(--ink)}
+.bal .lbl{font-family:var(--px);font-size:7px;color:var(--mut)}.bal b{font-family:var(--vt);font-size:19px;font-weight:400}
+.icon{width:38px;height:38px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--panel);color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+.icon:hover{color:var(--grn)}
+.icon:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{border-bottom:2px solid var(--ink);position:relative;background:var(--panel)}
+.hero .wrap{padding:34px 18px 26px}
+.hero h1{font-family:var(--px);font-size:clamp(18px,3vw,30px);font-weight:400;letter-spacing:.5px;line-height:1.6;color:var(--ink)}
+.hero h1 .g{color:var(--grn)}
+.hero p{color:var(--sub);font-size:14px;margin-top:12px;max-width:680px;line-height:1.6}
+.hero .tk{display:flex;gap:14px;margin-top:20px;flex-wrap:wrap}
+.hero .tk>div{background:var(--panel);border:2px solid var(--ink);padding:12px 18px;min-width:150px;box-shadow:4px 4px 0 var(--ink)}
+.hero .tk .k{font-family:var(--px);font-size:7px;color:var(--mut);letter-spacing:.5px;line-height:1.5}
+.hero .tk .v{font-family:var(--vt);font-size:24px;margin-top:4px}
+
+/* ---------- terminal grid ---------- */
+.term{display:grid;grid-template-columns:232px 1fr 304px;gap:16px;padding:18px 0}
+.card{position:relative;background:var(--panel);border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ink)}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:2px solid var(--ink);
+  font-family:var(--px);font-size:8px;color:var(--ink);letter-spacing:.5px;text-transform:uppercase;line-height:1.5}
+
+/* markets list */
+.mkts{align-self:start;overflow:hidden}
+.mrow{display:grid;grid-template-columns:1fr auto;gap:2px;padding:11px 15px;border-bottom:2px solid var(--ink);cursor:pointer;transition:.08s}
+.mrow:last-child{border-bottom:none}
+.mrow:hover{background:#eefcef}
+.mrow.on{background:var(--grn);color:#fff}
+.mrow.on .lev,.mrow.on .c{color:#eaffea}
+.mrow .s{font-family:var(--px);font-size:9px;line-height:1.6}
+.mrow .lev{font-family:var(--vt);font-size:15px;color:var(--mut);margin-top:1px}
+.mrow .p{font-family:var(--vt);font-size:18px;text-align:right}
+.mrow .c{font-family:var(--vt);font-size:15px;text-align:right;margin-top:1px}
+.mrow.on .c.up,.mrow.on .c.down{color:#eaffea}
+
+/* center */
+.mid{display:flex;flex-direction:column;gap:16px;min-width:0}
+.mkthead{display:flex;align-items:center;gap:26px;padding:15px 18px;flex-wrap:wrap}
+.mkthead .sym{display:flex;align-items:center;gap:9px;font-family:var(--px);font-size:12px;line-height:1.5}
+.mkthead .price{font-family:var(--vt);font-size:32px}
+.mkthead .col .l{font-family:var(--px);font-size:7px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.mkthead .col .v{font-family:var(--vt);font-size:19px;margin-top:2px}
+.chip{font-family:var(--px);font-size:7px;letter-spacing:.5px;border:2px solid var(--ink);padding:4px 7px}
+.chartwrap{position:relative;height:340px;padding:6px;background:#fff}
+#chart{width:100%;height:100%;display:block}
+.chiplbl{position:absolute;top:14px;left:18px;font-family:var(--vt);font-size:16px;color:var(--mut);letter-spacing:1px;display:flex;gap:8px;align-items:center}
+.live{display:inline-flex;align-items:center;gap:5px;color:var(--up)}
+.live .dot{width:7px;height:7px;background:var(--up);animation:pulse 1.6s steps(2) infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* side-state strip */
+.sides{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;padding:12px 16px;border-top:2px solid var(--ink);align-items:center}
+.sd-col{display:flex;flex-direction:column;gap:2px}
+.sd-col .t{font-family:var(--px);font-size:7px;letter-spacing:.5px;color:var(--mut)}
+.sd-col .mono{font-size:16px}
+.sd-col .dim{color:var(--mut);font-size:15px}
+.sd-note{grid-column:1/-1;font-size:11px;color:var(--mut);line-height:1.4;border-top:2px solid var(--ink);padding-top:8px}
+.badge-drain{color:var(--gold);font-weight:700}
+
+/* solvency engine */
+.solv{margin:8px 0 16px;border-color:var(--ink)}
+.solv-body{display:grid;grid-template-columns:310px 1fr;gap:22px;padding:18px}
+.hbox{display:flex;flex-direction:column;justify-content:center;border-right:2px solid var(--ink);padding-right:22px}
+.hlbl{font-family:var(--px);font-size:7px;letter-spacing:1px;color:var(--mut)}
+.hval{font-family:var(--vt);font-size:60px;line-height:1;margin:8px 0 6px;color:var(--grn)}
+.hval.stress{color:var(--gold)}
+.hsub{font-size:11.5px;color:var(--sub);line-height:1.45}
+.hbar{height:12px;background:#fff;border:2px solid var(--ink);margin-top:13px;overflow:hidden}
+.hfill{height:100%;width:100%;background:var(--grn);transition:width .5s}
+.hfill.stress{background:var(--gold)}
+.bsheet{display:flex;flex-direction:column;justify-content:center}
+.brow{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:7px 0;border-bottom:2px solid #e2f2e4;color:var(--sub)}
+.brow:last-of-type{border-bottom:none}
+.brow.res{color:var(--ink)}.brow.res b{font-size:20px}
+.brow sub{font-size:9px}
+.brow b{font-family:var(--vt);font-size:18px;font-weight:400}
+.formula{font-family:var(--vt);font-size:17px;color:var(--mut);margin-top:10px;padding-top:10px;border-top:2px dashed var(--ink);letter-spacing:.2px}
+.invs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 18px 18px}
+.inv{background:var(--bg);border:2px solid var(--ink);padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.5;box-shadow:3px 3px 0 var(--ink)}
+.inv b{display:block;color:var(--ink);font-family:var(--px);font-size:8px;line-height:1.6;margin-bottom:6px}
+.hbanner{display:none;margin:12px 0;padding:13px 17px;border:2px solid var(--red);background:#fff5f6;font-size:12.5px;color:#8c2434;box-shadow:4px 4px 0 var(--ink)}
+.hbanner.on{display:block}
+
+/* positions */
+.postbl{width:100%;border-collapse:collapse;font-size:12.5px}
+.postbl th{text-align:left;font-family:var(--px);font-size:7px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:2px solid var(--ink)}
+.postbl td{padding:11px 14px;border-bottom:2px solid #e2f2e4;font-family:var(--vt);font-size:17px}
+.postbl tr:last-child td{border-bottom:none}
+.postbl .sd{font-family:var(--px);font-size:7px;padding:4px 7px;border:2px solid var(--ink)}
+.sd.long{color:#fff;background:var(--grn)}
+.sd.short{color:#fff;background:var(--red)}
+.xbtn{font-family:var(--px);font-size:7px;color:#fff;border:2px solid var(--ink);background:var(--red);padding:6px 11px;box-shadow:2px 2px 0 var(--ink)}
+.xbtn:hover{filter:brightness(.92)}
+.xbtn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+.empty{padding:26px 14px;text-align:center;color:var(--mut);font-size:13px;font-family:'Inter'}
+
+/* order panel */
+.order{align-self:start;position:sticky;top:76px}
+.ord-body{padding:14px}
+.ls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.ls button{padding:12px;border:2px solid var(--ink);background:var(--panel);color:var(--sub);font-family:var(--px);font-size:10px;transition:.08s;box-shadow:3px 3px 0 var(--ink)}
+.ls button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.ls button.long.on{background:var(--grn);color:#fff}
+.ls button.short.on{background:var(--red);color:#fff}
+.fld{margin-bottom:12px}
+.fld .lab{display:flex;justify-content:space-between;font-family:var(--px);font-size:7px;color:var(--mut);margin-bottom:6px;line-height:1.5}
+.fld .lab b{color:var(--sub);font-family:var(--vt);font-size:14px;font-weight:400}
+.inp{display:flex;align-items:center;background:#fff;border:2px solid var(--ink);padding:0 12px}
+.inp:focus-within{box-shadow:3px 3px 0 var(--grn)}
+.inp input{flex:1;background:none;border:none;outline:none;color:var(--ink);font-family:var(--vt);font-size:22px;padding:8px 0;width:100%}
+.inp .suf{font-family:var(--vt);font-size:16px;color:var(--mut)}
+.pcts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.pcts button{font-family:var(--px);font-size:7px;color:var(--sub);border:2px solid var(--ink);background:var(--panel);padding:7px 0;box-shadow:2px 2px 0 var(--ink)}
+.pcts button:hover{color:var(--grn)}
+.pcts button:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+.levwrap{display:flex;align-items:center;gap:12px}
+.levwrap input[type=range]{flex:1;-webkit-appearance:none;height:8px;background:#fff;border:2px solid var(--ink);outline:none}
+.levwrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;cursor:pointer;background:var(--grn);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.levwrap .lv{font-family:var(--vt);font-size:22px;width:50px;text-align:right;color:var(--dk)}
+.readout{background:var(--bg);border:2px solid var(--ink);padding:11px 13px;margin:13px 0}
+.readout .r{display:flex;justify-content:space-between;font-size:12px;padding:4px 0}
+.readout .r span{color:var(--mut)}.readout .r b{font-family:var(--vt);font-size:17px;font-weight:400}
+.bigbtn{width:100%;padding:15px;border:2px solid var(--ink);font-family:var(--px);font-size:11px;letter-spacing:.3px;box-shadow:4px 4px 0 var(--ink);transition:.08s}
+.bigbtn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.bigbtn.long{background:var(--grn);color:#fff}
+.bigbtn.short{background:var(--red);color:#fff}
+.bigbtn:hover{filter:brightness(.95)}
+.acctline{display:flex;justify-content:space-between;font-size:11.5px;color:var(--mut);margin-top:12px;padding-top:12px;border-top:2px solid #e2f2e4}
+.acctline b{font-family:var(--vt);font-size:16px;font-weight:400;color:var(--sub)}
+
+/* lower sections */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:8px 0 16px}
+.stat{padding:16px 18px}
+.stat .l{font-family:var(--px);font-size:7px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;line-height:1.5}
+.stat .v{font-family:var(--vt);font-size:30px;margin-top:8px}
+.lb{font-size:13px}
+.lb .r{display:grid;grid-template-columns:26px 1fr auto auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:2px solid #e2f2e4}
+.lb .r:last-child{border-bottom:none}
+.lb .rk{font-family:var(--px);font-size:9px;color:var(--gold)}
+.lb .w{font-family:var(--vt);color:var(--sub);font-size:17px}
+.lb .o{font-size:11px;color:var(--mut)}
+.lb .pnl{font-family:var(--vt);font-size:18px}
+
+.ca{display:flex;align-items:center;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0;padding:14px 18px}
+.ca .t{font-family:var(--px);font-size:8px;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.ca code{font-family:var(--vt);font-size:19px;color:var(--dk);word-break:break-all}
+.ca button{font-family:var(--px);font-size:8px;color:#fff;background:var(--grn);border:2px solid var(--ink);padding:7px 13px;box-shadow:3px 3px 0 var(--ink)}
+.ca button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+.disc{margin:16px 0;padding:14px 18px;border:2px solid var(--ink);background:#fffbe8;box-shadow:4px 4px 0 var(--ink);font-size:12.5px;color:var(--sub);line-height:1.6}
+.disc b{color:var(--ink)}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 38px;border-top:2px solid var(--ink);margin-top:16px}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;background:rgba(11,36,19,.45)}
+.modal.on{display:flex}
+.mcard{width:min(440px,92vw);padding:24px}
+.mcard h3{font-family:var(--px);font-weight:400;font-size:12px;margin-bottom:10px;line-height:1.6}
+.mcard p{color:var(--sub);font-size:13px;margin-bottom:16px}
+.mcard .inp{margin-bottom:14px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);z-index:90;
+  background:#ffffff;border:2px solid var(--ink);color:var(--ink);
+  padding:13px 18px;font-family:var(--px);font-size:9px;line-height:1.6;opacity:0;transition:.18s;pointer-events:none;
+  box-shadow:4px 4px 0 var(--ink)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--grn);color:var(--dk)}
+.toast.err{border-color:var(--red);color:var(--red)}
+
+@media(max-width:1080px){.term{grid-template-columns:1fr}.order{position:static}.mkts{order:-1}.stats{grid-template-columns:1fr 1fr}.solv-body{grid-template-columns:1fr}.hbox{border-right:none;border-bottom:2px solid var(--ink);padding-right:0;padding-bottom:16px}.invs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="/">
+    <svg class="drop" viewBox="0 0 5 7" shape-rendering="crispEdges" aria-hidden="true">
+      <rect x="0" y="0" width="5" height="1" fill="#00c805"/>
+      <rect x="4" y="1" width="1" height="1" fill="#00c805"/>
+      <rect x="0" y="0" width="2" height="7" fill="#00c805"/>
+    </svg>
+    <b>GAMMA</b><span class="chip">PAPER</span>
+  </a>
+  <nav class="nav">
+    <a href="/">Overview</a><a href="#trade">Trade</a><a href="#engine">Engine</a><a href="/docs">Docs</a><a href="/#faq">FAQ</a>
+  </nav>
+  <div class="right">
+    <div class="nettoggle" id="nettoggle" style="display:none">
+      <button class="netbtn on" id="net-demo">Demo</button>
+
+    </div>
+    <div class="bal"><span class="lbl">USDC</span><b id="bal">—</b></div>
+    <button class="btn acc" id="connect">Connect</button>
+  </div>
+</div></header>
+
+<section class="hero"><div class="wrap">
+  <h1>Trade perps on <span class="g">stocks &amp; coins.</span></h1>
+  <p>Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. Powered by a <b style="color:var(--ink)">percolator-style risk engine</b>: structurally solvent by design. Capital is senior, profit is junior — <b style="color:var(--dk)">you can never withdraw more than actually exists</b>. No ADL queues, no admin, no insurance black box.</p>
+  <div class="tk">
+    <div><div class="k">OPEN INTEREST</div><div class="v mono" id="h-oi">—</div></div>
+    <div><div class="k">TRADERS</div><div class="v mono" id="h-tr">—</div></div>
+    <div><div class="k">RESIDUAL · BACKS PROFIT</div><div class="v mono up" id="h-res">—</div></div>
+    <div><div class="k">HAIRCUT H · EXITS</div><div class="v mono" id="h-hc">—</div></div>
+  </div>
+</div></section>
+
+<main class="wrap" id="trade">
+  <div class="hbanner" id="hbanner"></div>
+  <div class="term">
+    <!-- markets -->
+    <aside class="card mkts">
+      <div class="ch">Markets <span class="mono" style="text-transform:none;color:var(--mut)">oracle</span></div>
+      <div id="mlist"></div>
+    </aside>
+
+    <!-- center -->
+    <section class="mid">
+      <div class="card">
+        <div class="mkthead">
+          <div class="sym"><span id="m-sym">—</span><span class="chip" id="m-lev" style="color:var(--gold);border-color:var(--ink)">—</span></div>
+          <div class="price" id="m-price">—</div>
+          <div class="col"><div class="l">24h</div><div class="v" id="m-chg">—</div></div>
+          <div class="col"><div class="l">Funding /1h</div><div class="v" id="m-fund">—</div></div>
+          <div class="col"><div class="l">Open Interest</div><div class="v" id="m-oi">—</div></div>
+        </div>
+        <div class="chartwrap">
+          <div class="chiplbl"><span id="c-sym">—</span><span class="live"><span class="dot"></span>LIVE</span></div>
+          <canvas id="chart"></canvas>
+        </div>
+        <div class="sides" id="sides">
+          <div class="sd-col"><span class="t">LONG SIDE</span><span class="mono" id="sd-long">A 1.00 · Normal</span><span class="mono dim" id="sd-loi">OI —</span></div>
+          <div class="sd-col"><span class="t">SHORT SIDE</span><span class="mono" id="sd-short">A 1.00 · Normal</span><span class="mono dim" id="sd-soi">OI —</span></div>
+          <div class="sd-note">A = side deleverage index (1.00 = no ADL). On liquidation it shrinks instead of picking a victim — losses socialize via K.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch">Your Positions <span id="pos-count" class="mono" style="color:var(--mut)">0</span></div>
+        <div style="overflow-x:auto">
+          <table class="postbl"><thead><tr>
+            <th>Market</th><th>Side</th><th>Size</th><th>Entry</th><th>Mark</th><th>Liq.</th><th>PnL</th><th>Withdraw (H)</th><th></th>
+          </tr></thead><tbody id="postbody"></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- order -->
+    <aside class="card order">
+      <div class="ch">Order</div>
+      <div class="ord-body">
+        <div class="ls">
+          <button class="long on" data-side="long">Long</button>
+          <button class="short" data-side="short">Short</button>
+        </div>
+        <div class="fld">
+          <div class="lab"><span>Size</span><b id="free">free —</b></div>
+          <div class="inp"><input id="size" type="text" inputmode="decimal" placeholder="0.00" value="1000"><span class="suf">USD</span></div>
+          <div class="pcts"><button data-pct="25">25%</button><button data-pct="50">50%</button><button data-pct="75">75%</button><button data-pct="100">Max</button></div>
+        </div>
+        <div class="fld">
+          <div class="lab"><span>Leverage</span><b id="levmax">max —</b></div>
+          <div class="levwrap"><input id="lev" type="range" min="1" max="20" value="10" step="1"><span class="lv" id="levv">10×</span></div>
+        </div>
+        <div class="readout">
+          <div class="r"><span>Entry price</span><b id="r-entry">—</b></div>
+          <div class="r"><span>Margin required</span><b id="r-margin">—</b></div>
+          <div class="r"><span>Est. liquidation</span><b id="r-liq" class="down">—</b></div>
+          <div class="r"><span>Fee (0.06%)</span><b id="r-fee">—</b></div>
+        </div>
+        <button class="bigbtn long" id="submit">Long SPY</button>
+        <div class="acctline"><span>Realized PnL</span><b id="a-real">—</b></div>
+        <div class="acctline" style="border:none;margin-top:0;padding-top:6px"><span>Your exits backed at</span><b id="a-lp">—</b></div>
+        <div id="chainfunds" style="display:none;gap:8px;margin-top:10px">
+          <button class="btn" id="cf-dep" style="flex:1">Deposit USDC</button>
+          <button class="btn" id="cf-wd" style="flex:1">Withdraw</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- solvency engine -->
+  <div class="card solv" id="engine">
+    <div class="ch">▲ Solvency Engine ▲ <span class="mono" style="text-transform:none;color:var(--dk)">percolator · v16.8.3</span></div>
+    <div class="solv-body">
+      <div class="hbox">
+        <div class="hlbl">HAIRCUT RATIO · H</div>
+        <div class="hval mono" id="e-h">—</div>
+        <div class="hsub" id="e-hsub">profits currently backed at 100% — exits fully funded</div>
+        <div class="hbar"><div class="hfill" id="e-hfill"></div></div>
+      </div>
+      <div class="bsheet">
+        <div class="brow"><span>Vault balance · V</span><b class="mono" id="e-v">—</b></div>
+        <div class="brow"><span>Senior capital · C<sub>tot</sub></span><b class="mono" id="e-c">—</b></div>
+        <div class="brow"><span>Insurance · I</span><b class="mono" id="e-i">—</b></div>
+        <div class="brow res"><span>Residual · backs profit</span><b class="mono up" id="e-res">—</b></div>
+        <div class="brow"><span>Open profit claims</span><b class="mono" id="e-pnl">—</b></div>
+        <div class="brow"><span>Pending warmup · R</span><b class="mono dim" id="e-pend">—</b></div>
+        <div class="formula mono">Residual = V − (C<sub>tot</sub> + I)&nbsp;&nbsp;·&nbsp;&nbsp;H = min(Residual, ΣPnL⁺) ÷ ΣPnL⁺</div>
+      </div>
+    </div>
+    <div class="invs">
+      <div class="inv"><b>Backed exits</b>Capital is senior, profit is junior. No account withdraws more value than exists on the balance sheet.</div>
+      <div class="inv"><b>Queue-free ADL</b>Lazy A/K/F side indices socialize liquidation & funding pro-rata in O(1) — no victim queue.</div>
+      <div class="inv"><b>Bounded cranks</b>Repricing is capped per slot, so an oracle spike can't blow open interest through unbudgeted loss.</div>
+    </div>
+  </div>
+
+  <!-- stats -->
+  <div class="stats">
+    <div class="card stat"><div class="l">Open Interest</div><div class="v mono" id="s-oi">—</div></div>
+    <div class="card stat"><div class="l">Vault Balance</div><div class="v mono" id="s-v">—</div></div>
+    <div class="card stat"><div class="l">Insurance Fund</div><div class="v mono up" id="s-ins">—</div></div>
+    <div class="card stat"><div class="l">$GAMMA Price</div><div class="v mono" id="s-drip">—</div></div>
+  </div>
+
+  <!-- leaderboard -->
+  <div class="card" id="board">
+    <div class="ch">Top Traders <span class="mono" style="text-transform:none;color:var(--mut)">realized PnL</span></div>
+    <div class="lb" id="lb"></div>
+  </div>
+
+  <div class="card ca" id="cabar" style="display:none">
+    <span class="t">$GAMMA CA</span><code id="ca-mint"></code><button id="ca-copy">Copy</button>
+  </div>
+
+  <div class="disc">
+    <b>Live prices · paper-traded.</b> GAMMA runs on <b>real live oracle prices</b> — Pyth equity feeds for the 10 US stocks (SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL, HOOD), pinned deep-liquidity DEX pairs for Robinhood-native listings — and a faithful port of the <b>percolator</b> solvency engine — the markets, mark-to-market, funding, liquidations, and haircut are all live and real. Trading itself is <b>paper</b>: positions and USDC are simulated, with <b>no custody and no real funds at risk</b>. $GAMMA is a real token; on-chain custody &amp; settlement are a later, audited phase. Perpetual futures with leverage are extremely high-risk and can be liquidated to zero. Not financial advice.
+  </div>
+</main>
+
+<footer>GAMMA · 8-bit perps on Robinhood Chain · paper-traded demo · <span class="mono">$GAMMA</span></footer>
+
+<div class="modal" id="wmodal"><div class="card mcard">
+  <h3>Connect to trade</h3>
+  <p>Paste any address to load a paper-trading account (10,000 demo USDC). No signing, no risk — it's a simulation.</p>
+  <div class="inp"><input id="waddr" type="text" placeholder="your wallet address (0x…)"></div>
+  <button class="btn acc" id="wsave" style="width:100%;padding:13px">Start trading</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/client/src/app.js"></script>
+</body>
+</html>

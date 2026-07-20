@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Docs — GAMMA · the perp DEX that can't go insolvent</title>
+<meta name="description" content="GAMMA documentation: the percolator-style solvency engine (haircut H, queue-free ADL, bounded cranks), trading guide, markets, oracle, API reference, and the road to mainnet.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GAMMA">
+<meta property="og:title" content="GAMMA Docs — how the solvency engine works">
+<meta property="og:description" content="Haircut H · queue-free ADL · bounded cranks. The full mechanics of a perp DEX that can't go insolvent, on Robinhood Chain.">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6fdf7; --panel:#ffffff; --ink:#0b2413; --sub:#47664f; --mut:#7d947f;
+  --grn:#00c805; --dk:#008f04; --lime:#a3e635; --red:#ff4d68; --gold:#b8860b;
+  --px:'Press Start 2P',monospace; --vt:'VT323',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;border-radius:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14.5px;line-height:1.62;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,200,5,.05) 0 1px,transparent 1px 24px),
+    repeating-linear-gradient(90deg,rgba(0,200,5,.05) 0 1px,transparent 1px 24px)}
+.mono{font-family:var(--vt);font-size:17px;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);background:var(--panel);color:var(--ink);
+  padding:13px 20px;font-family:var(--px);font-size:10px;line-height:1.4;letter-spacing:.5px;cursor:pointer;
+  box-shadow:4px 4px 0 var(--ink);transition:.08s}
+.btn:hover{background:#eefcef}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.btn.acc{background:var(--grn);color:#fff}
+.btn.acc:hover{background:var(--dk)}
+.btn.sm{padding:10px 15px;font-size:9px}
+.top{position:sticky;top:0;z-index:40;background:var(--panel);border-bottom:2px solid var(--ink)}
+.top .wrap{display:flex;align-items:center;gap:22px;height:64px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .drop{width:26px;height:26px}
+.brand b{font-family:var(--px);font-size:15px;font-weight:400;letter-spacing:1px;color:var(--ink)}
+.nav{display:flex;gap:6px;margin-left:10px}
+.nav a{font-family:var(--px);font-size:8px;color:var(--sub);padding:10px 11px}
+.nav a:hover{color:var(--ink);background:#eefcef}
+.nav a.on{color:#fff;background:var(--grn)}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+@media(max-width:760px){.nav{display:none}}
+
+/* live strip */
+.livestrip{border-bottom:2px solid var(--ink);background:var(--panel)}
+.livestrip .wrap{display:flex;gap:26px;align-items:center;height:42px;overflow-x:auto}
+.lv{display:flex;gap:8px;align-items:center;font-family:var(--vt);font-size:17px;letter-spacing:.6px;color:var(--mut);white-space:nowrap}
+.lv b{color:var(--dk);font-weight:400}
+.lv .dot{width:8px;height:8px;background:var(--grn)}
+
+/* layout */
+.docs{display:grid;grid-template-columns:250px 1fr;gap:44px;max-width:1180px;margin:0 auto;padding:34px 22px 90px}
+@media(max-width:900px){.docs{grid-template-columns:1fr}.side{display:none}}
+.side{position:sticky;top:80px;height:fit-content;border-right:2px solid var(--ink);padding-right:18px}
+.side h5{font-family:var(--px);font-size:7px;letter-spacing:2px;text-transform:uppercase;color:var(--mut);margin:18px 0 7px}
+.side h5:first-child{margin-top:0}
+.side a{display:block;font-size:13px;font-weight:600;color:var(--sub);padding:6px 10px;border-left:3px solid transparent}
+.side a:hover{color:var(--ink);background:#eefcef}
+.side a.on{color:var(--dk);border-left-color:var(--grn);background:#eefcef}
+
+/* content */
+.content{max-width:780px;min-width:0}
+.crumb{font-family:var(--vt);font-size:17px;letter-spacing:1px;color:var(--mut);margin-bottom:14px}
+.crumb a{color:var(--mut)} .crumb a:hover{color:var(--grn)}
+h1{font-family:var(--px);font-weight:400;font-size:clamp(18px,3vw,30px);letter-spacing:.5px;line-height:1.6;margin-bottom:12px}
+h1 .chrome{color:var(--grn)}
+.lede{color:var(--sub);font-size:15px;max-width:64ch;margin-bottom:8px}
+h2{font-family:var(--px);font-weight:400;font-size:14px;letter-spacing:.5px;line-height:1.7;margin:54px 0 14px;padding-top:22px;border-top:2px solid var(--ink);scroll-margin-top:84px}
+h2 .hash{color:var(--grn);margin-right:8px}
+h3{font-family:var(--px);font-size:10px;font-weight:400;line-height:1.7;color:var(--ink);margin:26px 0 8px;scroll-margin-top:84px}
+p{color:var(--sub);margin-bottom:12px;max-width:70ch}
+p b,li b{color:var(--ink)}
+ul,ol{margin:0 0 14px 20px;color:var(--sub)}
+li{margin-bottom:6px;max-width:66ch}
+code{font-family:var(--vt);font-size:1.15em;color:var(--dk);background:#eefcef;border:1px solid var(--ink);padding:0 5px}
+pre{font-family:var(--vt);font-size:17px;line-height:1.5;color:var(--ink);background:#ffffff;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:16px 18px;overflow-x:auto;margin:0 0 16px}
+pre b{color:var(--dk);font-weight:400}
+pre i{color:var(--mut);font-style:normal}
+.formula{background:#ffffff;border:2px solid var(--ink);border-left:6px solid var(--grn);box-shadow:4px 4px 0 var(--ink);padding:15px 20px;font-family:var(--vt);font-size:20px;color:var(--ink);margin:0 0 16px;overflow-x:auto;white-space:nowrap}
+.formula small{display:block;font-family:'Inter';font-size:11px;color:var(--mut);letter-spacing:1px;margin-top:7px;white-space:normal}
+.callout{background:var(--panel);border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:14px 18px;margin:0 0 16px;font-size:13.5px;color:var(--sub)}
+.callout.warn{background:#fffbe8}
+.callout.warn::before{content:"HONEST NOTE";display:block;font-family:var(--px);font-size:7px;letter-spacing:2px;color:var(--gold);margin-bottom:8px}
+.callout.note::before{content:"NOTE";display:block;font-family:var(--px);font-size:7px;letter-spacing:2px;color:var(--dk);margin-bottom:8px}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:13.5px;background:var(--panel);border:2px solid var(--ink)}
+th{font-family:var(--px);font-size:7px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);text-align:left;padding:10px 12px;border-bottom:2px solid var(--ink)}
+td{padding:9px 12px;border-bottom:1px solid #e2f2e4;color:var(--sub);vertical-align:top}
+td:first-child{font-family:var(--vt);font-size:18px;color:var(--ink);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.pillrow{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}
+.pill{font-family:var(--px);font-size:7px;letter-spacing:1px;color:var(--dk);background:var(--panel);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);padding:7px 12px}
+.inv{display:grid;grid-template-columns:44px 1fr;gap:14px;background:var(--panel);border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:16px 18px;margin-bottom:14px}
+.inv .n{font-family:var(--vt);font-size:30px;color:var(--grn)}
+.inv b{display:block;color:var(--ink);font-family:var(--px);font-size:9px;line-height:1.6;margin-bottom:5px}
+.inv span{color:var(--sub);font-size:13.5px}
+footer{border-top:2px solid var(--ink);padding:26px 0 40px;text-align:center;font-family:var(--vt);font-size:17px;color:var(--mut)}
+footer a{color:var(--sub)} footer a:hover{color:var(--grn)}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <a class="brand" href="/">
+    <svg class="drop" viewBox="0 0 5 7" shape-rendering="crispEdges" aria-hidden="true">
+      <rect x="0" y="0" width="5" height="1" fill="#00c805"/>
+      <rect x="4" y="1" width="1" height="1" fill="#00c805"/>
+      <rect x="0" y="0" width="2" height="7" fill="#00c805"/>
+    </svg>
+    <b>GAMMA</b>
+  </a>
+  <nav class="nav">
+    <a href="/">Overview</a><a class="on" href="/docs">Docs</a><a href="/#faq">FAQ</a>
+  </nav>
+  <div class="right">
+    <a class="btn acc sm" href="/app">Enter App →</a>
+  </div>
+</div></header>
+
+<div class="livestrip"><div class="wrap">
+  <span class="lv"><span class="dot"></span>LIVE</span>
+  <span class="lv">MARKETS <b id="lv-mkt">—</b></span>
+  <span class="lv">OPEN INTEREST <b id="lv-oi">—</b></span>
+  <span class="lv">RESIDUAL <b id="lv-res">—</b></span>
+  <span class="lv">HAIRCUT H <b id="lv-h">—</b></span>
+  <span class="lv">ORACLE <b>PYTH · LIVE</b></span>
+</div></div>
+
+<div class="docs">
+  <aside class="side" id="side">
+    <h5>Start</h5>
+    <a href="#overview">What is GAMMA</a>
+    <a href="#quickstart">Quickstart</a>
+    <h5>The Engine</h5>
+    <a href="#engine">Structural solvency</a>
+    <a href="#haircut">Invariant 1 · Haircut H</a>
+    <a href="#adl">Invariant 2 · Queue-free ADL</a>
+    <a href="#cranks">Invariant 3 · Bounded cranks</a>
+    <a href="#recovery">Side recovery</a>
+    <h5>Trading</h5>
+    <a href="#markets">Markets & leverage</a>
+    <a href="#positions">Positions, PnL & liquidation</a>
+    <a href="#fees">Fees & funding</a>
+    <a href="#withdraw">Withdrawals & H</a>
+    <h5>Infrastructure</h5>
+    <a href="#oracle">The oracle</a>
+    <a href="#api">API reference</a>
+    <h5>Protocol</h5>
+    <a href="#token">$GAMMA token</a>
+    <a href="#trust">Trust & status</a>
+    <a href="#roadmap">Road to mainnet</a>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><a href="/">gamma</a> / docs</div>
+    <h1>GAMMA <span class="chrome">Documentation</span></h1>
+    <p class="lede">Everything inside a perpetual-futures DEX that is <b>structurally incapable of insolvency</b> — the balance sheet, the three invariants, the trading mechanics, and the honest line between what runs today and what ships after audit.</p>
+    <div class="pillrow">
+      <span class="pill">ROBINHOOD CHAIN</span><span class="pill">PERCOLATOR ENGINE</span><span class="pill">REAL PYTH PRICES</span><span class="pill">PAPER-TRADED · NO CUSTODY</span>
+    </div>
+
+    <h2 id="overview"><span class="hash">#</span>What is GAMMA</h2>
+    <p><b>GAMMA is a permissionless perpetual-futures DEX on Robinhood Chain.</b> Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. What makes GAMMA different is not the trading — it's the settlement layer underneath it.</p>
+    <p>Most perp exchanges are one bad wick away from a hole in the balance sheet: winners are owed money the exchange doesn't have, and the fix is an ADL queue that picks victims, an "insurance fund" black box, or a socialized-loss email. GAMMA ports the <b>percolator</b> risk-engine architecture (originally authored by Anatoly Yakovenko), which makes that entire failure class <b>unrepresentable</b>:</p>
+    <div class="inv"><div class="n">01</div><div><b>Backed exits — the haircut H</b><span>Capital is senior, profit is junior. Nobody can ever withdraw more than actually exists on the balance sheet.</span></div></div>
+    <div class="inv"><div class="n">02</div><div><b>Queue-free ADL — A/K/F indices</b><span>When a liquidation leaves a hole, the loss socializes pro-rata across the winning side in O(1). No victim queue, no single trader punished.</span></div></div>
+    <div class="inv"><div class="n">03</div><div><b>Bounded cranks</b><span>Repricing is capped per tick, so an oracle wick can never move open interest through more loss than the exchange budgeted for.</span></div></div>
+    <div class="callout warn">GAMMA today runs the full engine against <b>real, live Pyth oracle prices</b> — but positions and USDC are <b>paper-traded</b>. There is no custody of real funds. The on-chain program exists; live custody is gated on audit. See <a href="#trust" style="color:var(--dk)">Trust &amp; status</a>.</div>
+
+    <h2 id="quickstart"><span class="hash">#</span>Quickstart</h2>
+    <ol>
+      <li><b>Enter the app</b> — hit <a href="/app" style="color:var(--dk)">Enter App</a>. No signup, no wallet signature, no risk.</li>
+      <li><b>Load an account</b> — paste any <code>0x…</code> wallet address. Your paper account is seeded with <b>10,000 USDC</b>.</li>
+      <li><b>Pick a market</b> — the 10-equity Pyth board (SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL, HOOD) plus every auto-discovered Robinhood-native coin, each marked to a real oracle price (Pyth equity feeds for the stocks, pinned DEX pairs for Robinhood-native tokens).</li>
+      <li><b>Open a position</b> — choose Long or Short, set size and leverage, review entry / margin / est. liquidation / fee, execute.</li>
+      <li><b>Manage it</b> — watch live PnL, ROE, your liquidation price, your <b>ADL index</b>, and your haircut-adjusted withdrawable value. Close whenever.</li>
+    </ol>
+    <pre><b>tip</b> — the Solvency Engine panel at the bottom of the terminal shows the live balance
+sheet: vault V, capital C, insurance I, residual, and the haircut H. Everything in the
+docs below is visible there, live, while you trade.</pre>
+
+    <h2 id="engine"><span class="hash">#</span>The engine — structural solvency</h2>
+    <p>Every account and every market settles against one global balance sheet:</p>
+    <table>
+      <tr><th>Term</th><th>Meaning</th></tr>
+      <tr><td>V</td><td>The vault — every dollar that has actually entered the system (margin + fees).</td></tr>
+      <tr><td>C_tot</td><td>Total trader capital — the sum of everyone's deposited margin. <b>Senior.</b></td></tr>
+      <tr><td>I</td><td>The insurance buffer — accumulated from trading and liquidation fees.</td></tr>
+      <tr><td>ΣPnL⁺</td><td>The sum of all <i>unrealized winning</i> PnL — what winners would like to withdraw. <b>Junior.</b></td></tr>
+    </table>
+    <div class="formula">Residual = V − (C_tot + I)<small>the only money that can ever pay out profit — what exists beyond returning everyone's capital and the insurance buffer</small></div>
+    <p>The entire design follows from one rule: <b>profit can only be paid out of the residual.</b> Capital is always senior to profit. If the residual can't cover every open winner at once, winners are paid at a discount — the haircut — rather than the exchange writing a check it can't cash.</p>
+
+    <h2 id="haircut"><span class="hash">#</span>Invariant 1 · the haircut H</h2>
+    <div class="formula">H = clamp( min(Residual, ΣPnL⁺) / ΣPnL⁺ , 0 … 1 )<small>the fraction of open profit the balance sheet can honor right now</small></div>
+    <p>When the system is healthy, <code>H = 100%</code> and profits are fully backed — withdrawing a winner pays out in full. If a violent move creates more paper profit than residual (the exact scenario that bankrupts normal exchanges), <b>H drops below 1</b> and every winner's <i>withdrawable</i> profit scales by H. Losers and capital are untouched.</p>
+    <div class="formula">withdrawable = C + min(0, PnL) + max(0, PnL) · H<small>your capital, minus your losses in full, plus your profits at the haircut rate</small></div>
+    <ul>
+      <li><b>It's a guarantee, not a penalty.</b> H exists so that the statement "you can never withdraw more than exists" is <i>always</i> true — for everyone, simultaneously, at any instant.</li>
+      <li><b>H recovers.</b> As fees accrue, positions close, or the market normalizes, the residual refills and H returns to 100%.</li>
+      <li><b>Fresh profit matures.</b> New profit lands in a per-account reserve <code>R</code> and unlocks over a warm-up window (25 ticks) before it counts as withdrawable — so a one-tick wick can't be printed and instantly extracted.</li>
+    </ul>
+    <div class="callout note">The terminal shows H at all times, and your positions table has a dedicated <b>Withdraw (H)</b> column — you always see exactly what you could take out right now.</div>
+
+    <h2 id="adl"><span class="hash">#</span>Invariant 2 · queue-free ADL (A / K / F)</h2>
+    <p>Every market keeps two <b>side-states</b> — one for longs, one for shorts. Each side carries three lazy indices, updated in O(1) per event no matter how many accounts exist:</p>
+    <table>
+      <tr><th>Index</th><th>What it accumulates</th></tr>
+      <tr><td>A</td><td>The <b>deleverage factor</b> — starts at 1. When a liquidation shrinks a side, A shrinks proportionally (<code>A ×= OI_after / OI_before</code>). Your effective position is <code>basis × A / A_entry</code>.</td></tr>
+      <tr><td>K</td><td>The <b>mark index</b> — price moves fold in as <code>K += A × ΔP</code>. Your PnL is read from the delta between K now and K at your entry snapshot.</td></tr>
+      <tr><td>F</td><td>The <b>funding index</b> — periodic funding accrues as <code>F ±= A × rate</code>, netted between sides the same lazy way.</td></tr>
+    </table>
+    <p>When a liquidated account leaves a deficit the insurance buffer can't absorb, the loss <b>socializes into the opposing side's K index</b> — spread pro-rata across every winner on that side:</p>
+    <div class="formula">K_opposing += −Deficit / OI_opposing<small>everyone on the winning side absorbs a sliver; nobody gets singled out</small></div>
+    <ul>
+      <li><b>No ADL queue.</b> Traditional exchanges rank winners and force-close the top of the queue at a price they didn't choose. GAMMA has no queue — deleveraging is a uniform, pro-rata index update.</li>
+      <li><b>No admin discretion.</b> There is no operator deciding who eats the loss. The math is the same for every account, every time.</li>
+      <li><b>Snapshot accounting.</b> Your position stores <code>(basis, A, K, F)</code> at entry; settlement just diffs the current indices against your snapshot. That's why it stays O(1).</li>
+    </ul>
+
+    <h2 id="cranks"><span class="hash">#</span>Invariant 3 · bounded cranks</h2>
+    <p>Marks move by <b>crank</b> — a permissionless tick that folds the newest oracle price into K. The crank is bounded:</p>
+    <div class="formula">|ΔP| ≤ MAX_MOVE × P_last  per tick<small>a single update can never reprice the book by more than the budgeted step</small></div>
+    <p>A flash wick on the oracle therefore can't teleport the mark through a canyon of liquidations in one step — the price walks there tick by tick, each tick settling PnL, liquidations and funding inside a bounded loss budget. Combined with H, this is what makes the worst case <i>slow and solvent</i> instead of instant and bankrupt. It also doubles as a bad-tick guard against oracle glitches.</p>
+
+    <h2 id="recovery"><span class="hash">#</span>Side recovery</h2>
+    <p>If cascading liquidations grind one side's A factor down, that side walks a state machine instead of dying:</p>
+    <table>
+      <tr><th>State</th><th>Trigger</th><th>Behavior</th></tr>
+      <tr><td>Normal</td><td>A ≥ 0.25</td><td>Business as usual — opens and closes allowed.</td></tr>
+      <tr><td>DrainOnly</td><td>A &lt; 0.25</td><td>The side is winding down: <b>closes only</b>, no new exposure. Shown as a badge in the market rail.</td></tr>
+      <tr><td>ResetPending → Normal</td><td>OI reaches 0</td><td>Indices snapshot, the <b>epoch increments</b>, A resets to 1, and the side reopens fresh. Stale positions from the old epoch settle at their snapshot.</td></tr>
+    </table>
+
+    <h2 id="markets"><span class="hash">#</span>Markets &amp; leverage</h2>
+    <p>The fixed board is <b>10 US equities on live Pyth stock feeds</b>:</p>
+    <table>
+      <tr><th>Market</th><th>What it is</th><th>Oracle feed</th></tr>
+      <tr><td>SPY-PERP</td><td>S&amp;P 500 ETF</td><td>Pyth · SPY/USD</td></tr>
+      <tr><td>GLD-PERP</td><td>Gold ETF</td><td>Pyth · GLD/USD</td></tr>
+      <tr><td>AAPL-PERP</td><td>Apple</td><td>Pyth · AAPL/USD</td></tr>
+      <tr><td>NVDA-PERP</td><td>NVIDIA</td><td>Pyth · NVDA/USD</td></tr>
+      <tr><td>TSLA-PERP</td><td>Tesla</td><td>Pyth · TSLA/USD</td></tr>
+      <tr><td>COIN-PERP</td><td>Coinbase</td><td>Pyth · COIN/USD</td></tr>
+      <tr><td>MSTR-PERP</td><td>Strategy</td><td>Pyth · MSTR/USD</td></tr>
+      <tr><td>META-PERP</td><td>Meta</td><td>Pyth · META/USD</td></tr>
+      <tr><td>GOOGL-PERP</td><td>Alphabet</td><td>Pyth · GOOGL/USD</td></tr>
+      <tr><td>HOOD-PERP</td><td>Robinhood — the stock itself</td><td>Pyth · HOOD/USD</td></tr>
+    </table>
+    <p>Listing is <b>permissionless by design</b> — any token with a reliable live price can carry a market, because the engine never takes directional risk it can't socialize safely. Equities mark to <b>Pyth</b>; Robinhood-native coins with no Pyth feed mark to a <b>pinned, deep-liquidity DEX pair</b> (a fixed pool address, not a token search — so a thin copycat pool can never become the price). Robinhood natives carry tighter max leverage to reflect their oracle thinness.</p>
+    <h3>Ecosystem auto-discovery</h3>
+    <p>Beyond the fixed equity board above, GAMMA <b>continuously scans the Robinhood Chain for live liquidity</b> and auto-lists every qualifying coin as a perp — no listing committee, no governance vote. A token is listed when its deepest on-chain pair clears a <b>liquidity floor</b> (≥ $20k) and shows real 24h volume; <b>max leverage scales to that depth</b> (≥$1M → 25×, ≥$500k → 20×, ≥$200k → 15×, ≥$75k → 10×, else 5×). The scan refreshes every few minutes, and each coin marks to its own pinned deepest pair.</p>
+    <h3>Permissionless listing</h3>
+    <p>Anyone can list a market instantly: paste a Robinhood-Chain token address into the <b>List any token</b> box on the home page (or <code>POST /api/list {token}</code>). GAMMA resolves the token's deepest pair, applies the same liquidity floor and leverage tiers, and the market is live in seconds. This is only possible <i>because</i> of the solvency engine — the vault is always the counterparty and every payout is haircut-bounded, so a new market can never create bad debt the exchange can't socialize.</p>
+
+    <h2 id="positions"><span class="hash">#</span>Positions, PnL &amp; liquidation</h2>
+    <p>Positions are <b>isolated sub-accounts</b>: each carries its own collateral <code>C</code>, entry snapshot, and liquidation price. One position blowing up never touches your others.</p>
+    <ul>
+      <li><b>Margin</b> — opening a position moves <code>size / leverage</code> from your account into the position as collateral.</li>
+      <li><b>PnL</b> — settled continuously from the K/F index deltas against your entry snapshot, marked to the live oracle.</li>
+      <li><b>Maintenance margin</b> — <code>0.50%</code> of current notional. You are liquidatable when <code>max(0, C + PnL) ≤ maintenance</code>.</li>
+      <li><b>Liquidation</b> — permissionless. The position is closed, a liquidation fee goes to insurance, the side's A shrinks, and any uninsured deficit socializes into the opposing K (see <a href="#adl" style="color:var(--dk)">ADL</a>).</li>
+      <li><b>ADL badge</b> — your positions table shows <code>ADL −x%</code> when your side's A has shrunk: that's the fraction of your effective size that liquidations have already deleveraged, transparently.</li>
+    </ul>
+
+    <h2 id="fees"><span class="hash">#</span>Fees &amp; funding</h2>
+    <table>
+      <tr><th>Fee</th><th>Rate</th><th>Where it goes</th></tr>
+      <tr><td>Trading fee</td><td>0.06% of notional</td><td>Insurance buffer I → the residual that backs H</td></tr>
+      <tr><td>Liquidation fee</td><td>0.50% of notional</td><td>Insurance buffer I</td></tr>
+      <tr><td>Funding</td><td>bilateral, periodic</td><td>Paid between sides via the F index — only accrues when both sides have open interest</td></tr>
+    </table>
+    <p>There is no fee switch pointed at a team wallet in the engine: fees exist to keep the balance sheet solvent. Fee capture for $GAMMA is a protocol-layer decision that ships with mainnet.</p>
+
+    <h2 id="withdraw"><span class="hash">#</span>Withdrawals &amp; H</h2>
+    <p>Your withdrawable balance is always computed under the haircut:</p>
+    <div class="formula">withdraw = C + min(0, PnL) + max(0, PnL) · H</div>
+    <ul>
+      <li>At <code>H = 100%</code> this is simply capital + PnL.</li>
+      <li>Below 100%, your capital and your losses are honored in full — only the <i>profit</i> leg scales. The stress banner and the gold H readout make this state impossible to miss.</li>
+      <li>Fresh profit sits in the warm-up reserve <code>R</code> for 25 ticks before it becomes withdrawable.</li>
+    </ul>
+
+    <h2 id="oracle"><span class="hash">#</span>The oracle</h2>
+    <ul>
+      <li><b>Source</b> — <a href="https://pyth.network" style="color:var(--dk)" target="_blank" rel="noopener">Pyth</a> price feeds via Hermes (including the US-equity feeds), fetched every ~2.5 seconds per market; pinned deep-liquidity DEX pairs for Robinhood-native coins.</li>
+      <li><b>Marking</b> — each new price enters through the bounded crank (<a href="#cranks" style="color:var(--dk)">Invariant 3</a>), which also acts as a bad-tick guard.</li>
+      <li><b>Restart safety</b> — after a redeploy, the first tick re-anchors price <i>without</i> marking, so downtime gaps can't print phantom PnL.</li>
+      <li><b>Funding rate</b> — model-based on the paper market (labeled as such in the UI); on-chain funding ships with the program.</li>
+    </ul>
+
+    <h2 id="api"><span class="hash">#</span>API reference</h2>
+    <p>The exchange exposes a public read/write JSON API — the same one the terminal uses. Base URL: the same origin as this site (all paths below are relative).</p>
+    <table>
+      <tr><th>Endpoint</th><th>Method</th><th>Returns</th></tr>
+      <tr><td>/api/config</td><td>GET</td><td>Token, network, markets, leverage caps, maintenance bps, oracle status.</td></tr>
+      <tr><td>/api/markets</td><td>GET</td><td>All markets: price, 24h move, funding, OI, per-side A/mode.</td></tr>
+      <tr><td>/api/market/:sym</td><td>GET</td><td>One market: price history + full long/short side-state (A, K, F, OI, epoch, mode).</td></tr>
+      <tr><td>/api/metrics</td><td>GET</td><td>The balance sheet: V, I, C_tot, ΣPnL⁺, residual, <b>haircut H</b>, OI, leaderboard.</td></tr>
+      <tr><td>/api/account</td><td>POST</td><td><code>{wallet}</code> → balances, positions with pnl / liq / withdraw(H) / adl.</td></tr>
+      <tr><td>/api/open</td><td>POST</td><td><code>{wallet, sym, side, size, lev}</code> → opens a position, returns the fill.</td></tr>
+      <tr><td>/api/close</td><td>POST</td><td><code>{wallet, id}</code> → closes a position, settles PnL under H.</td></tr>
+    </table>
+    <pre><i># watch the balance sheet live (against this site's origin)</i>
+curl -s /api/metrics | jq '{residual, haircut, oi}'
+
+<i># open a paper long: 2,500 USDC at 10× on TSLA</i>
+curl -s -X POST /api/open \
+  -H 'content-type: application/json' \
+  -d '{"wallet":"0xYourAddress","sym":"TSLA","side":"long","size":2500,"lev":10}'</pre>
+
+    <h2 id="token"><span class="hash">#</span>$GAMMA token</h2>
+    <ul>
+      <li><b>$GAMMA</b> is the governance and fee token of the GAMMA protocol.</li>
+      <li>It is <b>separate from trading collateral</b> — the engine settles in USDC terms; $GAMMA never backs positions. It is also distinct from the <b>HOOD</b> stock market, which trades on the equity board like any other ticker.</li>
+      <li>Planned utility: fee capture routing, listing governance (which markets/feeds get added), and insurance-buffer staking — finalized alongside the mainnet program.</li>
+      <li>The contract address appears in the site header the moment it's live. Anything else claiming to be $GAMMA is fake.</li>
+    </ul>
+
+    <h2 id="trust"><span class="hash">#</span>Trust &amp; status — what's real today</h2>
+    <table>
+      <tr><th>Layer</th><th>Status</th></tr>
+      <tr><td>Risk engine</td><td><b>Real &amp; running</b> — the full percolator port (H, A/K/F, bounded cranks, side recovery) settles every trade on this site.</td></tr>
+      <tr><td>Prices</td><td><b>Real</b> — live Pyth oracle feeds, ~2.5s cadence.</td></tr>
+      <tr><td>Positions &amp; USDC</td><td><b>Paper</b> — simulated balances, no deposits, no custody, zero real-fund risk.</td></tr>
+      <tr><td>On-chain program</td><td><b>Built</b> — the engine exists as a chain program (fixed-point, on-chain oracle, permissionless liquidation); on-chain deployment next.</td></tr>
+      <tr><td>Mainnet</td><td><b>Gated on audit</b> — the reference engine is experimental and unaudited; we will not custody real funds before an audit.</td></tr>
+    </table>
+    <div class="callout warn">Perpetual futures with leverage are extremely high-risk instruments — positions can liquidate to zero. GAMMA is deliberately paper-traded today so you can learn the engine with none of that risk. Nothing on this site is financial advice.</div>
+
+    <h2 id="roadmap"><span class="hash">#</span>Road to mainnet</h2>
+    <table>
+      <tr><th>Phase</th><th>Scope</th><th>Status</th></tr>
+      <tr><td>P0 · Paper exchange</td><td>Full engine + terminal on live Pyth prices, paper-traded</td><td><b style="color:var(--dk)">LIVE</b></td></tr>
+      <tr><td>P1 · Program</td><td>The engine as an on-chain program: custody, on-chain oracle, permissionless crank &amp; liquidation</td><td><b>Built</b> — on-chain next</td></tr>
+      <tr><td>P2 · Hardening</td><td>Public program deployment, keeper network, $GAMMA fee routing</td><td>Next</td></tr>
+      <tr><td>P3 · Mainnet</td><td>Audited deployment, real collateral, permissionless listings</td><td>Gated on audit</td></tr>
+    </table>
+    <p style="margin-top:20px"><a class="btn acc" href="/app">Enter the app →</a>&nbsp;&nbsp;<a class="btn" href="/#faq">Read the FAQ</a></p>
+  </main>
+</div>
+
+<footer>GAMMA · 8-bit perps on Robinhood Chain · <a href="/">home</a> · <a href="/app">app</a> · <a href="/docs">docs</a> · <span class="mono">$GAMMA</span></footer>
+
+<script>
+// live strip + sidebar highlight
+const cnt=(n)=>{if(n==null||!isFinite(n))return'—';const a=Math.abs(n);if(a>=1e9)return'$'+(n/1e9).toFixed(2)+'B';if(a>=1e6)return'$'+(n/1e6).toFixed(2)+'M';if(a>=1e3)return'$'+(n/1e3).toFixed(1)+'K';return'$'+n.toFixed(0)};
+(async()=>{try{
+  const cfg=await fetch('/api/config').then(r=>r.json());
+  if(cfg.markets)document.getElementById('lv-mkt').textContent=cfg.markets.length;
+  const m=await fetch('/api/metrics').then(r=>r.json());
+  document.getElementById('lv-oi').textContent=cnt(m.oi);
+  document.getElementById('lv-res').textContent=cnt(m.residual);
+  document.getElementById('lv-h').textContent=Math.round((m.haircut??1)*100)+'%';
+}catch(e){}})();
+const links=[...document.querySelectorAll('#side a')];
+const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);links.forEach(l=>l.classList.remove('on'));if(links[i])links[i].classList.add('on');}})},{rootMargin:'-20% 0px -70% 0px'});
+secs.forEach(s=>s&&io.observe(s));
+</script>
+</body>
+</html>
