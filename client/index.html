@@ -257,7 +257,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 38px;bor
 
 <section class="hero"><div class="wrap">
   <h1>Trade perps on <span class="g">stocks &amp; coins.</span></h1>
-  <p>Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. Powered by a <b style="color:var(--ink)">percolator-style risk engine</b>: structurally solvent by design. Capital is senior, profit is junior — <b style="color:var(--dk)">you can never withdraw more than actually exists</b>. No ADL queues, no admin, no insurance black box.</p>
+  <p>Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. Powered by a <b style="color:var(--ink)">percolator-style risk engine</b>: structurally solvent by design — <b style="color:var(--dk)">you can never withdraw more than actually exists</b>. No ADL queues, no admin, no insurance black box.</p>
   <div class="tk">
     <div><div class="k">OPEN INTEREST</div><div class="v mono" id="h-oi">—</div></div>
     <div><div class="k">TRADERS</div><div class="v mono" id="h-tr">—</div></div>
@@ -351,7 +351,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 38px;bor
       </div>
       <div class="bsheet">
         <div class="brow"><span>Vault balance · V</span><b class="mono" id="e-v">—</b></div>
-        <div class="brow"><span>Senior capital · C<sub>tot</sub></span><b class="mono" id="e-c">—</b></div>
+        <div class="brow"><span>Trader capital · C<sub>tot</sub></span><b class="mono" id="e-c">—</b></div>
         <div class="brow"><span>Insurance · I</span><b class="mono" id="e-i">—</b></div>
         <div class="brow res"><span>Residual · backs profit</span><b class="mono up" id="e-res">—</b></div>
         <div class="brow"><span>Open profit claims</span><b class="mono" id="e-pnl">—</b></div>
@@ -360,7 +360,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:30px 0 38px;bor
       </div>
     </div>
     <div class="invs">
-      <div class="inv"><b>Backed exits</b>Capital is senior, profit is junior. No account withdraws more value than exists on the balance sheet.</div>
+      <div class="inv"><b>Backed exits</b>Deposits are paid first; profit waits its turn. No account withdraws more value than exists on the balance sheet.</div>
       <div class="inv"><b>Queue-free ADL</b>Lazy A/K/F side indices socialize liquidation & funding pro-rata in O(1) — no victim queue.</div>
       <div class="inv"><b>Bounded cranks</b>Repricing is capped per slot, so an oracle spike can't blow open interest through unbudgeted loss.</div>
     </div>

@@ -3,7 +3,7 @@
 // (dcccrypto/percolator, spec v16.8.3). DEMO / simulation.
 //
 // The point of percolator is STRUCTURAL SOLVENCY, implemented with three invariants:
-//   1. H  — Haircut ratio (backed exits): capital is senior, profit is junior.
+//   1. H  — Haircut ratio (backed exits): deposits outrank profits.
 //           Residual = V - (C_tot + I). Profits are paid at H = min(Residual, ΣPnL+)/ΣPnL+.
 //           "No user can ever withdraw more value than actually exists on the balance sheet."
 //   2. A/K/F — lazy per-side indices: queue-free ADL / funding / mark socialization, O(1)/account.
@@ -74,8 +74,8 @@ const FEED = {
 // deep-liquidity DEX pair. These two are the always-on deep seeds; the DISCOVERY
 // engine (below) auto-lists the rest of the Robinhood ecosystem from live pairs.
 const DSPAIR = {
-  JUGGERNAUT: '0x588b0785f50063260003B7790C42f1eF74902746', // vs WETH · ~$450k liq
-  CASHCAT: '0xA70fc67C9F69da90B63a0e4C05D229954574E313',    // vs WETH · ~$5.6M liq
+  CASHCAT: '0xA70fc67C9F69da90B63a0e4C05D229954574E313', // vs WETH · ~$5.6M liq
+  PONS: '0x10CC6BD38112cAc182db90B6a71d8Bb5939526bA',    // vs WETH · ~$970k liq
 };
 function side() { return { A: 1, K: 0, F: 0, OI: 0, epoch: 0, mode: 'Normal', K0: 0, F0: 0 }; }
 // leverage scales to REAL liquidity — deeper pair, more leverage. Honest risk gating.
@@ -109,9 +109,9 @@ function addDyn(sym, px, dp, o) {
   m = mkMarket(sym, px, dp, Object.assign({ dyn: true }, o));
   MKT.push(m); return m;
 }
-// always-on deep Robinhood seeds (present even before the first discovery pass)
-addDyn('JUGGERNAUT', 0.0102, 5, { ds: DSPAIR.JUGGERNAUT, maxLev: 10, eco: { name: 'Juggernaut', pair: DSPAIR.JUGGERNAUT } });
+// the CURATED native board — CASHCAT + PONS only, each pinned to its deepest pool
 addDyn('CASHCAT', 0.111, 4, { ds: DSPAIR.CASHCAT, maxLev: 20, eco: { name: 'Cash Cat', pair: DSPAIR.CASHCAT } });
+addDyn('PONS', 0.0217, 4, { ds: DSPAIR.PONS, maxLev: 20, eco: { name: 'Pons', pair: DSPAIR.PONS } });
 let PRICE_OK = false, LAST_OK = 0;
 
 // first sighting seeds the market (no mark); subsequent ticks mark-to-market
@@ -233,7 +233,7 @@ if (db.V == null) db.V = 35000; if (db.I == null) db.I = 8000;
 // recreate previously-discovered dynamic markets BEFORE reapplying side-states,
 // so positions on auto-listed Robinhood coins survive a restart even before the
 // next discovery pass completes.
-if (Array.isArray(db.dyn)) for (const d of db.dyn) addDyn(d.sym, d.base || 0.0001, d.dp || dpForPx(d.base || 0.0001), { ds: d.ds, maxLev: d.maxLev, eco: d.eco });
+if (Array.isArray(db.dyn)) for (const d of db.dyn) { if (!DSPAIR[d.sym]) continue; addDyn(d.sym, d.base || 0.0001, d.dp || dpForPx(d.base || 0.0001), { ds: d.ds, maxLev: d.maxLev, eco: d.eco }); }
 // restore per-market side indices + price refs so persisted positions stay consistent across restarts
 if (db.mkt) for (const s of db.mkt) { const m = M(s.sym); if (!m) continue; m.long = s.long; m.short = s.short; m.P_last = s.P_last; m.base = s.base; m.dayRef = s.dayRef; m.seenLive = true; m.bootCatch = true; }
 function snapMkt() { return MKT.map((m) => ({ sym: m.sym, long: m.long, short: m.short, P_last: m.P_last, base: m.base, dayRef: m.dayRef })); }
@@ -267,6 +267,7 @@ function applyMark(m, target) {
 
 // (2) O(1) per-account settlement from K/F snapshot deltas → realized PnL; warmup reserves
 function settle(p, m) {
+  if (!m) return;                                          // market no longer listed — pruned by tick()
   const S = m[p.side];
   if (S.epoch !== p.epoch) { p.basis = 0; return; }       // stale (post side-reset) → zeroed
   const dPnl = (p.basis / p.a_basis) * ((S.K - p.k_snap) + (S.F - p.f_snap));
@@ -308,6 +309,7 @@ function tick() {
   for (const p of db.pos) settle(p, M(p.sym));
   for (let i = db.pos.length - 1; i >= 0; i--) {
     const p = db.pos[i], m = M(p.sym);
+    if (!m) { const w = W(p.wallet); w.usdc += p.C; db.V -= p.C; db.pos.splice(i, 1); continue; }  // delisted market: refund margin, prune
     if (effPos(p, m) === 0 && p.basis !== 0) { /* dust */ }
     if (Math.max(0, p.C + p.PNL) <= mmReq(p, m) && Math.abs(effPos(p, m)) > 1e-12) liquidate(p, m, i);
   }
@@ -419,7 +421,7 @@ const server = http.createServer(async (req, res) => {
   if (u.startsWith('/api/market/')) { const d = marketDetail(u.split('/')[3]); return d ? json(res, 200, d) : json(res, 404, { error: 'no market' }); }
   if (req.method === 'POST') {
     const d = await body(req);
-    if (u === '/api/list') return json(res, 200, await listToken(d.token || ''));   // permissionless listing
+    if (u === '/api/list') return json(res, 200, { error: 'listings are curated — the native board is CASHCAT + PONS' });
     if (u === '/api/account') { if (!isWallet(d.wallet || '')) return json(res, 200, { error: 'paste a valid 0x wallet' }); return json(res, 200, account(d.wallet)); }
     if (!isWallet(d.wallet || '')) return json(res, 200, { error: 'connect a wallet first' });
     if (u === '/api/open') { const r = openPos(d.wallet, d.market, d.side === 'short' ? 'short' : 'long', d.sizeUsd, d.lev); if (r.error) return json(res, 200, r); save(); return json(res, 200, Object.assign({ ok: true }, account(d.wallet))); }
@@ -429,10 +431,9 @@ const server = http.createServer(async (req, res) => {
 });
 
 (async () => {
-  await discover();                                                     // auto-list the Robinhood ecosystem from live pairs
+  // discovery + permissionless listing are DISABLED: the native board is curated (CASHCAT + PONS)
   await fetchPrices(); await fetchDexPrices();                          // seed real prices before accepting traffic
-  server.listen(PORT, () => console.log('GAMMA × percolator engine on :' + PORT + ' — ' + MKT.length + ' markets (' + LISTED_COUNT + ' Robinhood-native) · Pyth live=' + PRICE_OK));
+  server.listen(PORT, () => console.log('GAMMA × percolator engine on :' + PORT + ' — ' + MKT.length + ' markets (curated natives: CASHCAT + PONS) · Pyth live=' + PRICE_OK));
   setInterval(fetchPrices, 2500); setInterval(fetchDexPrices, 4000);               // live oracle refresh
-  setInterval(discover, 180000);                // re-scan the Robinhood ecosystem every 3 min
   setInterval(tick, SEC * 1000);                // settle / liquidate / recover
 })();

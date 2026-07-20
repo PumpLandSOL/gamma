@@ -104,7 +104,7 @@ async function loadMetrics() {
     ? 'vault stressed — open profits are paid at ' + hpct.toFixed(1) + '% until losers settle. capital is always whole.'
     : 'profits currently backed at 100% — exits fully funded.';
   const hb = $('hbanner');
-  if (stress) { hb.classList.add('on'); hb.innerHTML = '⚠ <b>Backed exits active:</b> profit claims ($' + cnt(M.profit).replace('$', '') + ') exceed the residual buffer ($' + cnt(M.residual).replace('$', '') + '). Profits pay at <b>' + hpct.toFixed(1) + '%</b> — by design, the exchange stays solvent and senior capital is never touched.'; }
+  if (stress) { hb.classList.add('on'); hb.innerHTML = '⚠ <b>Backed exits active:</b> profit claims ($' + cnt(M.profit).replace('$', '') + ') exceed the residual buffer ($' + cnt(M.residual).replace('$', '') + '). Profits pay at <b>' + hpct.toFixed(1) + '%</b> — by design, the exchange stays solvent and deposited capital is never touched.'; }
   else hb.classList.remove('on');
   // stat cards
   $('s-oi').textContent = cnt(M.oi); $('s-v').textContent = cnt(M.vault); $('s-ins').textContent = cnt(M.insurance); $('s-drip').textContent = '$' + (M.gammaPrice || 0).toFixed(6);

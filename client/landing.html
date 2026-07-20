@@ -187,7 +187,7 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
 <section class="hero"><div class="wrap">
   <div class="status-pill"><span class="d"></span>LIVE ON REAL PYTH PRICES · (PAPER MODE) · CUSTODY AFTER AUDIT</div>
   <h1>Stocks. Memecoins.<br><span class="g">Leverage.</span> 8-bit.</h1>
-  <p class="lede"><b style="color:var(--ink)">Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX.</b> GAMMA brings the percolator risk engine to Robinhood Chain — a permissionless perpetual-futures DEX that is solvent by construction. Long TSLA at 10× · short SPY · ape QUANT. Capital is senior, profit is junior. No ADL queues. No insurance black box. No admin.</p>
+  <p class="lede"><b style="color:var(--ink)">Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX.</b> GAMMA brings the percolator risk engine to Robinhood Chain — a perpetual-futures DEX that is solvent by construction. Long TSLA at 10× · short SPY · ape CASHCAT. Wins are only ever paid out of money that actually exists. No ADL queues. No insurance black box. No admin.</p>
   <div class="cta">
     <a class="btn acc" href="/app">Enter App →</a>
     <a class="btn" href="#engine">How the engine works</a>
@@ -210,7 +210,7 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
     </div>
     <div class="rows">
       <div class="row"><div class="tag">VAULT</div><div><h3>Oracle-priced liquidity vault</h3><p>Every trade fills against a shared USDC vault at the oracle price ± spread. Liquidity providers are the house — they earn the spread and fees. No order book, no fragmented liquidity, instant fills on any size the vault can back.</p></div></div>
-      <div class="row"><div class="tag">RESIDUAL · H</div><div><h3>Backed exits — the haircut</h3><p>Capital is a senior claim; profit is junior. The exchange only pays profit out of its real residual buffer. If open profit ever exceeds it, every winner is paid the same fraction <b>H</b> — instantly and equally. You can never withdraw more value than actually exists.</p><div class="f">Residual = V − (C + I) &nbsp;·&nbsp; H = min(Residual, ΣPnL⁺) ÷ ΣPnL⁺</div></div></div>
+      <div class="row"><div class="tag">RESIDUAL · H</div><div><h3>Backed exits — the haircut</h3><p>Your deposit stands first in line; profit waits its turn. The exchange only pays profit out of its real residual buffer. If open profit ever exceeds it, every winner is paid the same fraction <b>H</b> — instantly and equally. You can never withdraw more value than actually exists.</p><div class="f">Residual = V − (C + I) &nbsp;·&nbsp; H = min(Residual, ΣPnL⁺) ÷ ΣPnL⁺</div></div></div>
       <div class="row"><div class="tag v">A / K / F</div><div><h3>Queue-free deleveraging</h3><p>Most exchanges run an ADL queue that force-closes one unlucky winner to cover a blow-up. GAMMA doesn't. Three lazy per-side indices socialize a liquidation across the whole side, pro-rata, in O(1). No victim is chosen — the loss is shared in microscopic, fair slices.</p></div></div>
       <div class="row"><div class="tag v">CRANK</div><div><h3>Bounded cranks</h3><p>Repricing is capped per slot: a single oracle wick or funding spike physically cannot move open interest through more loss than the exchange budgeted for. The cause of most "got liquidated on a wick" stories is closed off at the protocol level.</p></div></div>
       <div class="row"><div class="tag g">PYTH</div><div><h3>Real oracle prices, live now</h3><p>Every market marks to a live oracle today — Pyth equity feeds for the 10 US stocks (SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL, HOOD), pinned DEX pairs for Robinhood-native coins — in paper mode. The marks, funding, liquidations and the haircut you see are the genuine engine running on genuine prices. Only custody is simulated.</p></div></div>
@@ -257,21 +257,12 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
 
 <!-- ROBINHOOD ECOSYSTEM -->
 <section class="section" id="eco"><div class="wrap">
-  <div class="eyebrow">▲ THE ROBINHOOD ECOSYSTEM · LIVE ▲</div>
-  <h2 style="font-family:var(--px);font-size:clamp(14px,2.6vw,24px);line-height:1.7;margin:10px 0 8px">Every coin on Robinhood Chain.<br><span class="g">Leveraged.</span></h2>
-  <p style="color:var(--sub);max-width:680px;margin-bottom:6px">GAMMA auto-discovers the Robinhood ecosystem straight from on-chain liquidity and lists each coin as a live perp — long or short, on an engine that can't go insolvent. Leverage scales to real depth. <b style="color:var(--ink)">No listing committee. No market makers. No permission.</b></p>
-  <div id="eco-meta" class="mono" style="color:var(--mut);margin-bottom:18px">loading the ecosystem…</div>
+  <div class="eyebrow">▲ ROBINHOOD NATIVES · LIVE ▲</div>
+  <h2 style="font-family:var(--px);font-size:clamp(14px,2.6vw,24px);line-height:1.7;margin:10px 0 8px">The native board.<br><span class="g">Leveraged.</span></h2>
+  <p style="color:var(--sub);max-width:680px;margin-bottom:6px">Alongside the stock board, GAMMA carries a <b style="color:var(--ink)">curated pair of Robinhood-native coins — CASHCAT and PONS</b> — each marked to its deepest on-chain pool, long or short, on an engine that can't go insolvent. Leverage scales to real depth.</p>
+  <div id="eco-meta" class="mono" style="color:var(--mut);margin-bottom:18px">loading the native board…</div>
 
   <div id="eco-board" class="eco-board"></div>
-
-  <div class="eco-list">
-    <div class="eco-list-h"><b>List any Robinhood-Chain token.</b> Paste a token address — if it has real liquidity, it's a market in seconds.</div>
-    <div class="eco-list-row">
-      <input id="eco-addr" placeholder="0x… token address" spellcheck="false" autocomplete="off">
-      <button id="eco-go">List it →</button>
-    </div>
-    <div id="eco-msg" class="eco-msg"></div>
-  </div>
 </div></section>
 
 <!-- FAQ -->
@@ -282,11 +273,11 @@ footer a{color:var(--sub)}footer a:hover{color:var(--grn)}
     <div class="faq">
       <details open><summary>Is this live with real money?</summary><div class="a">No — and that's deliberate. Pre-audit, public trading puts user funds at risk, and we won't do that. Today GAMMA runs in <b>paper mode on real Pyth oracle prices</b>: the engine, marks, funding, liquidations and the haircut are all genuinely live — only positions and USDC are simulated, so nothing is at risk. Real custody opens the moment the audit clears, not a day before.</div></details>
       <details><summary>When does mainnet open?</summary><div class="a">After the external audit clears — we're targeting <b>Q4 2026</b>, gated on that sign-off. The on-chain program is already built: real USDC custody in a program vault, on-chain oracle, and the full percolator engine enforced in-program — with on-chain deployment next. Public trading opens the instant the audit passes. We won't ship a protocol that loses your funds to hit a date.</div></details>
-      <details><summary>What is "percolator," and what's the haircut?</summary><div class="a">Percolator is a risk-engine design for permissionless perps that makes the exchange <b>structurally solvent</b>. Its core trick is the haircut <b>H</b>: profit is only ever paid from the exchange's real residual buffer, so total payouts can never exceed what exists. Your deposited capital is always senior and untouched.</div></details>
+      <details><summary>What is "percolator," and what's the haircut?</summary><div class="a">Percolator is a risk-engine design for permissionless perps that makes the exchange <b>structurally solvent</b>. Its core trick is the haircut <b>H</b>: profit is only ever paid from the exchange's real residual buffer, so total payouts can never exceed what exists. Your deposited capital stays whole and is paid out first.</div></details>
       <details><summary>How is liquidation fair without an ADL queue?</summary><div class="a">When a position blows past its margin, the loss is absorbed by the <b>A/K/F side indices</b> — spread proportionally across everyone on that side in tiny slices, in O(1). No single "victim" gets their winning trade force-closed the way ADL queues do on other venues.</div></details>
       <details><summary>Can the exchange go insolvent?</summary><div class="a">By construction, no. The core invariant is that withdrawals can never exceed the vault balance. In a worst case, open profits are <b>haircut</b> (paid at a fraction) — but capital is never lost to insolvency, and the book never freezes.</div></details>
-      <details><summary>What can I trade?</summary><div class="a"><b>Tokenized US equities and Robinhood-native coins.</b> The Pyth board carries 10 US stocks — SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL and HOOD — and the discovery engine auto-lists every Robinhood-Chain coin with real on-chain liquidity, up to 25× depending on depth. Long TSLA at 10×, short SPY, ape QUANT — one terminal.</div></details>
-      <details><summary>Why can I list any token?</summary><div class="a">Markets are permissionless and oracle-priced. Any token with a price feed can have a perp market — no order book or dedicated market makers required, because the vault is always the counterparty.</div></details>
+      <details><summary>What can I trade?</summary><div class="a"><b>Tokenized US equities and Robinhood-native coins.</b> The Pyth board carries 10 US stocks — SPY, GLD, AAPL, NVDA, TSLA, COIN, MSTR, META, GOOGL and HOOD — plus a curated native board: CASHCAT and PONS, marked to their deepest on-chain pools, up to 25× depending on depth. Long TSLA at 10×, short SPY, ape CASHCAT — one terminal.</div></details>
+      <details><summary>Why only two native coins?</summary><div class="a">Because a perp market is only as honest as its price. CASHCAT and PONS carry deep, stable on-chain pools that can't be cheaply pushed around; listing every thin pool would invite oracle games. The board grows as pools earn their depth.</div></details>
       <details><summary>What is $GAMMA?</summary><div class="a">The community and fee token, launched on Robinhood Chain. It's separate from trading collateral (USDC). Protocol fees and incentives route to $GAMMA. The token being live does not mean real-money trading is live — that's gated on the audit. Note: $GAMMA the protocol token is not the HOOD stock market, which stays listed as the "HOOD" ticker.</div></details>
       <details><summary>Are the prices real?</summary><div class="a">Yes. Every market pulls a <b>live oracle feed</b> right now — Pyth for the equities, pinned deep-liquidity DEX pairs for Robinhood natives. What's simulated is custody and settlement — not the prices or the engine math.</div></details>
       <details><summary>Is leverage risky?</summary><div class="a">Extremely. Perpetual futures can liquidate your entire margin to zero in seconds. Understand maintenance margin, size small, and never trade money you can't afford to lose. This is high-risk by nature, even before mainnet.</div></details>
@@ -318,10 +309,10 @@ async function loadEco(){
   try{
     const e=await fetch('/api/ecosystem').then(r=>r.json());
     const meta=document.getElementById('eco-meta');
-    meta.innerHTML='<span class="g">'+e.listed+'</span> Robinhood-Chain coins live · auto-discovered from on-chain liquidity · refreshes every 3 min';
+    meta.innerHTML='<span class="g">'+e.listed+'</span> Robinhood-native markets · marked to their deepest on-chain pools · live';
     const b=document.getElementById('eco-board');
     b.innerHTML=e.coins.map(c=>{
-      const up=c.chg24>=0;const seed=(c.sym==='CASHCAT'||c.sym==='JUGGERNAUT');
+      const up=c.chg24>=0;const seed=(c.sym==='CASHCAT'||c.sym==='PONS');
       return '<div class="eco-c">'+(seed?'<div class="seed">DEEP</div>':'')+
         '<div class="top"><span class="sym">'+c.sym+'</span><span class="lev">'+c.maxLev+'×</span></div>'+
         '<div><span class="px">'+px(c.px,c.dp)+'</span><span class="chg '+(up?'up':'down')+'">'+(up?'+':'')+(c.chg24||0).toFixed(1)+'%</span></div>'+
@@ -331,19 +322,6 @@ async function loadEco(){
     }).join('');
   }catch(e){}
 }
-async function listToken(){
-  const inp=document.getElementById('eco-addr'),btn=document.getElementById('eco-go'),msg=document.getElementById('eco-msg');
-  const a=inp.value.trim();if(!a){inp.focus();return;}
-  btn.disabled=true;msg.className='eco-msg';msg.textContent='resolving on-chain liquidity…';
-  try{
-    const r=await fetch('/api/list',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({token:a})}).then(r=>r.json());
-    if(r.error){msg.className='eco-msg err';msg.textContent='✕ '+r.error;}
-    else{msg.className='eco-msg ok';msg.textContent='✓ '+r.sym+(r.existed?' is already listed':' is now live')+' — '+r.maxLev+'× · '+cnt(r.liq)+' liquidity. Open it in the terminal →';inp.value='';loadEco();}
-  }catch(e){msg.className='eco-msg err';msg.textContent='✕ network error — try again';}
-  btn.disabled=false;
-}
-document.getElementById('eco-go').onclick=listToken;
-document.getElementById('eco-addr').addEventListener('keydown',e=>{if(e.key==='Enter')listToken();});
 loadEco();setInterval(loadEco,8000);
 load();setInterval(load,5000);
 document.getElementById('ca-copy')&&(document.getElementById('ca-copy').onclick=()=>{const c=document.getElementById('ca-mint').textContent;if(c)navigator.clipboard.writeText(c)});

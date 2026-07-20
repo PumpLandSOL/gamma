@@ -168,9 +168,9 @@ footer a{color:var(--sub)} footer a:hover{color:var(--grn)}
     </div>
 
     <h2 id="overview"><span class="hash">#</span>What is GAMMA</h2>
-    <p><b>GAMMA is a permissionless perpetual-futures DEX on Robinhood Chain.</b> Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. What makes GAMMA different is not the trading — it's the settlement layer underneath it.</p>
+    <p><b>GAMMA is a perpetual-futures DEX on Robinhood Chain.</b> Long and short tokenized stocks and Robinhood-native coins — up to 25× — on one pixel-perfect perp DEX. What makes GAMMA different is not the trading — it's the settlement layer underneath it.</p>
     <p>Most perp exchanges are one bad wick away from a hole in the balance sheet: winners are owed money the exchange doesn't have, and the fix is an ADL queue that picks victims, an "insurance fund" black box, or a socialized-loss email. GAMMA ports the <b>percolator</b> risk-engine architecture (originally authored by Anatoly Yakovenko), which makes that entire failure class <b>unrepresentable</b>:</p>
-    <div class="inv"><div class="n">01</div><div><b>Backed exits — the haircut H</b><span>Capital is senior, profit is junior. Nobody can ever withdraw more than actually exists on the balance sheet.</span></div></div>
+    <div class="inv"><div class="n">01</div><div><b>Backed exits — the haircut H</b><span>Deposits stand ahead of profit in the payout order. Nobody can ever withdraw more than actually exists on the balance sheet.</span></div></div>
     <div class="inv"><div class="n">02</div><div><b>Queue-free ADL — A/K/F indices</b><span>When a liquidation leaves a hole, the loss socializes pro-rata across the winning side in O(1). No victim queue, no single trader punished.</span></div></div>
     <div class="inv"><div class="n">03</div><div><b>Bounded cranks</b><span>Repricing is capped per tick, so an oracle wick can never move open interest through more loss than the exchange budgeted for.</span></div></div>
     <div class="callout warn">GAMMA today runs the full engine against <b>real, live Pyth oracle prices</b> — but positions and USDC are <b>paper-traded</b>. There is no custody of real funds. The on-chain program exists; live custody is gated on audit. See <a href="#trust" style="color:var(--dk)">Trust &amp; status</a>.</div>
@@ -192,12 +192,12 @@ docs below is visible there, live, while you trade.</pre>
     <table>
       <tr><th>Term</th><th>Meaning</th></tr>
       <tr><td>V</td><td>The vault — every dollar that has actually entered the system (margin + fees).</td></tr>
-      <tr><td>C_tot</td><td>Total trader capital — the sum of everyone's deposited margin. <b>Senior.</b></td></tr>
+      <tr><td>C_tot</td><td>Total trader capital — the sum of everyone's deposited margin. <b>Paid out first.</b></td></tr>
       <tr><td>I</td><td>The insurance buffer — accumulated from trading and liquidation fees.</td></tr>
       <tr><td>ΣPnL⁺</td><td>The sum of all <i>unrealized winning</i> PnL — what winners would like to withdraw. <b>Junior.</b></td></tr>
     </table>
     <div class="formula">Residual = V − (C_tot + I)<small>the only money that can ever pay out profit — what exists beyond returning everyone's capital and the insurance buffer</small></div>
-    <p>The entire design follows from one rule: <b>profit can only be paid out of the residual.</b> Capital is always senior to profit. If the residual can't cover every open winner at once, winners are paid at a discount — the haircut — rather than the exchange writing a check it can't cash.</p>
+    <p>The entire design follows from one rule: <b>profit can only be paid out of the residual.</b> Deposits always stand ahead of profit. If the residual can't cover every open winner at once, winners are paid at a discount — the haircut — rather than the exchange writing a check it can't cash.</p>
 
     <h2 id="haircut"><span class="hash">#</span>Invariant 1 · the haircut H</h2>
     <div class="formula">H = clamp( min(Residual, ΣPnL⁺) / ΣPnL⁺ , 0 … 1 )<small>the fraction of open profit the balance sheet can honor right now</small></div>
@@ -255,11 +255,9 @@ docs below is visible there, live, while you trade.</pre>
       <tr><td>GOOGL-PERP</td><td>Alphabet</td><td>Pyth · GOOGL/USD</td></tr>
       <tr><td>HOOD-PERP</td><td>Robinhood — the stock itself</td><td>Pyth · HOOD/USD</td></tr>
     </table>
-    <p>Listing is <b>permissionless by design</b> — any token with a reliable live price can carry a market, because the engine never takes directional risk it can't socialize safely. Equities mark to <b>Pyth</b>; Robinhood-native coins with no Pyth feed mark to a <b>pinned, deep-liquidity DEX pair</b> (a fixed pool address, not a token search — so a thin copycat pool can never become the price). Robinhood natives carry tighter max leverage to reflect their oracle thinness.</p>
-    <h3>Ecosystem auto-discovery</h3>
-    <p>Beyond the fixed equity board above, GAMMA <b>continuously scans the Robinhood Chain for live liquidity</b> and auto-lists every qualifying coin as a perp — no listing committee, no governance vote. A token is listed when its deepest on-chain pair clears a <b>liquidity floor</b> (≥ $20k) and shows real 24h volume; <b>max leverage scales to that depth</b> (≥$1M → 25×, ≥$500k → 20×, ≥$200k → 15×, ≥$75k → 10×, else 5×). The scan refreshes every few minutes, and each coin marks to its own pinned deepest pair.</p>
-    <h3>Permissionless listing</h3>
-    <p>Anyone can list a market instantly: paste a Robinhood-Chain token address into the <b>List any token</b> box on the home page (or <code>POST /api/list {token}</code>). GAMMA resolves the token's deepest pair, applies the same liquidity floor and leverage tiers, and the market is live in seconds. This is only possible <i>because</i> of the solvency engine — the vault is always the counterparty and every payout is haircut-bounded, so a new market can never create bad debt the exchange can't socialize.</p>
+    <h3>The native board — curated</h3>
+    <p>Alongside the equity board, GAMMA lists a <b>curated pair of Robinhood-native coins: CASHCAT and PONS</b>. Each marks to a <b>pinned, deep-liquidity DEX pair</b> (a fixed pool address, not a token search — so a thin copycat pool can never become the price), and natives carry tighter max leverage than equities to reflect their oracle thinness.</p>
+    <p>Why only two? Because a perp market is only as honest as its price. A thin pool can be pushed around cheaply, and a pushable pool is a pushable oracle. CASHCAT (~$5.6M pool) and PONS (~$1M pool) clear that bar today; the board grows as other pools earn their depth — by listing decision, not by an open faucet.</p>
 
     <h2 id="positions"><span class="hash">#</span>Positions, PnL &amp; liquidation</h2>
     <p>Positions are <b>isolated sub-accounts</b>: each carries its own collateral <code>C</code>, entry snapshot, and liquidation price. One position blowing up never touches your others.</p>
@@ -342,7 +340,7 @@ curl -s -X POST /api/open \
       <tr><td>P0 · Paper exchange</td><td>Full engine + terminal on live Pyth prices, paper-traded</td><td><b style="color:var(--dk)">LIVE</b></td></tr>
       <tr><td>P1 · Program</td><td>The engine as an on-chain program: custody, on-chain oracle, permissionless crank &amp; liquidation</td><td><b>Built</b> — on-chain next</td></tr>
       <tr><td>P2 · Hardening</td><td>Public program deployment, keeper network, $GAMMA fee routing</td><td>Next</td></tr>
-      <tr><td>P3 · Mainnet</td><td>Audited deployment, real collateral, permissionless listings</td><td>Gated on audit</td></tr>
+      <tr><td>P3 · Mainnet</td><td>Audited deployment, real collateral, an expanded curated board</td><td>Gated on audit</td></tr>
     </table>
     <p style="margin-top:20px"><a class="btn acc" href="/app">Enter the app →</a>&nbsp;&nbsp;<a class="btn" href="/#faq">Read the FAQ</a></p>
   </main>
