@@ -66,6 +66,7 @@ const FEED = {
   SPY:   '5374a7d76a45ae2443cef351d10482b7bcc6ef5a928e75030d63b5fb3abe7cb5',
   GLD:   'e190f467043db04548200354889dfe0d9d314c08b8d4e62fabf4d5a3140fecca',
   HOOD:  'f6a467733ed71ee41f7e50132b14cff1d6857554a40d8a92c63859d1bcd64e57', // the Robinhood stock itself
+  BONK:  '72b021217ca3fe68922a19aaf990109cb9d84e9ad004b4d2025ad6f529314419', // BONK — live on Robinhood
 };
 // Robinhood-native listings — no Pyth feed exists for these, so they mark to a
 // PINNED deep-liquidity DEX pair (DexScreener pair address, NOT a per-token
@@ -94,10 +95,11 @@ function mkMarket(sym, px, dp, o) {
   };
 }
 // Pyth stock board — always present, equity-grade leverage (index > megacap > high-beta).
-const MAJOR_LEV = { SPY: 25, GLD: 20, AAPL: 20, META: 20, GOOGL: 20, NVDA: 15, TSLA: 10, COIN: 10, MSTR: 10, HOOD: 10 };
+const MAJOR_LEV = { SPY: 25, GLD: 20, AAPL: 20, META: 20, GOOGL: 20, NVDA: 15, TSLA: 10, COIN: 10, MSTR: 10, HOOD: 10, BONK: 10 };
 const MKT = [
   ['SPY', 620, 2], ['GLD', 310, 2], ['AAPL', 230, 2], ['NVDA', 170, 2], ['TSLA', 320, 2],
   ['COIN', 350, 2], ['MSTR', 400, 2], ['META', 700, 2], ['GOOGL', 190, 2], ['HOOD', 120, 2],
+  ['BONK', 0.00002, 8],
 ].map(([sym, px, dp]) => mkMarket(sym, px, dp, { maxLev: MAJOR_LEV[sym] || 10 }));
 const M = (s) => MKT.find((m) => m.sym === s);
 // dynamic Robinhood-ecosystem markets (auto-discovered / permissionlessly listed)

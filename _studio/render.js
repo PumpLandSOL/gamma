@@ -16,6 +16,7 @@ const SIZES = {
   'gamma-keyart': [2400, 1350],
   'gamma-engine': [2400, 1350],
   'gamma-markets': [2400, 1350],
+  'gamma-bonk': [2400, 1350],
 };
 
 const only = process.argv[2];

@@ -149,6 +149,30 @@ assets['gamma-markets'] = page(2400, 1350, `
      <div class="foot">one terminal · real prices · solvent by construction · gammaperpsrh.xyz · $GAMMA</div>
    </div>`);
 
+// 6) BONK LISTING 2400×1350 — announcement card
+assets['gamma-bonk'] = page(2400, 1350, `
+  .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:52px;text-align:center}
+  .eye{font-size:17px;color:var(--dk);letter-spacing:4px}
+  .h{font-size:64px;line-height:1.65}
+  .h .o{color:#ff9e2c}
+  .h .g{color:var(--grn)}
+  .sub{font-family:'Inter';font-weight:600;font-size:33px;color:var(--sub);max-width:1460px;line-height:1.65}
+  .sub b{color:var(--ink)}
+  .big{display:inline-flex;align-items:center;gap:26px;background:#ff9e2c;border:4px solid var(--ink);box-shadow:12px 12px 0 var(--ink);padding:30px 52px}
+  .big .t{font-family:var(--px);font-size:34px;color:#fff;letter-spacing:2px}
+  .big .l{font-family:var(--vt);font-size:38px;color:var(--ink)}
+  .row{display:flex;gap:20px}
+  .dom{font-size:24px;color:var(--dk);letter-spacing:2px}`,
+  `<div class="wrap">
+     <div class="px eye">▲ NEW LISTING ▲</div>
+     <div class="px h"><span class="o">BONK</span> has joined Robinhood.<br>So it's <span class="g">live on GAMMA.</span></div>
+     <div class="big"><span class="t">BONK-PERP</span><span class="l">LONG · SHORT · 10X</span></div>
+     <div class="sub">Marked to its <b>real Pyth feed</b>, trading next to SPY, TSLA and the natives —
+       on the perp DEX that can't go insolvent.</div>
+     <div class="row">${chip('REAL PYTH PRICE', true)}${chip('UP TO 10X')}${chip('LIVE NOW', true)}</div>
+     <div class="px dom">gammaperpsrh.xyz · $GAMMA · @GammaPerps</div>
+   </div>`);
+
 for (const [name, html] of Object.entries(assets)) {
   fs.writeFileSync(path.join(OUT, name + '.html'), html);
   console.log('wrote', name + '.html');
